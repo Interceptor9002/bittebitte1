@@ -1,0 +1,3188 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#000000">
+<title>RollerKey Ultra</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{touch-action:manipulation;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+html,body{margin:0;padding:0;background:#000;color:#4dffa0;
+  font:16px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}
+body{padding:16px 16px 60px;max-width:680px;margin:0 auto;touch-action:pan-y}
+body.ck{overflow:hidden}
+h1{font-size:17px;letter-spacing:.2em;margin:0 0 4px;font-weight:700}
+h1 span{color:#1f8a4d;font-weight:400}
+#status{margin:6px 0 16px;font-size:14px;color:#2f9a5e;min-height:42px}
+#status.ok{color:#4dffa0}#status.warn{color:#ffcf4d}#status.err{color:#ff6b6b}
+section{border:1px solid #12492a;border-radius:14px;padding:16px;margin:0 0 16px;background:#04100a}
+section.hot{border-color:#2f9a5e;background:#06190e}
+h2{font-size:13px;letter-spacing:.18em;color:#2f9a5e;margin:0 0 14px;font-weight:700}
+.row{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:7px 0;
+  border-bottom:1px dotted #12492a}
+.row:last-of-type{border-bottom:0}
+.row span{color:#2f9a5e}
+.row b{color:#4dffa0;font-weight:600;text-align:right;word-break:break-all}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+button{font:inherit;font-size:14px;font-weight:600;letter-spacing:.1em;padding:15px 10px;
+  border-radius:11px;background:#06190e;color:#4dffa0;border:1px solid #12492a;cursor:pointer;
+  touch-action:manipulation}
+button:active{background:#0a2a16}
+button:disabled{opacity:.3}
+button.wide{grid-column:1/-1}
+button.big{padding:26px 10px;font-size:18px;letter-spacing:.2em;border-color:#2f9a5e}
+button.danger{color:#ffa0a0;border-color:#5c1414;background:#1a0404}
+input,select{width:100%;font:inherit;font-size:16px;padding:14px;border-radius:11px;
+  background:#04100a;color:#4dffa0;border:1px solid #12492a;margin-top:10px}
+input::placeholder{color:#1f6b3b}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:36px;
+  background:transparent;border:0;margin:6px 0 0;padding:0}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:5px;
+  border:1px solid #12492a;
+  background:linear-gradient(90deg,#4dffa0 0 var(--p,0%),#0a2a16 var(--p,0%) 100%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;
+  border-radius:50%;background:#4dffa0;border:3px solid #04100a;margin-top:-9px;
+  box-shadow:0 0 0 1px #2f9a5e}
+input[type=range]::-moz-range-track{height:8px;border-radius:5px;border:1px solid #12492a;
+  background:#0a2a16}
+input[type=range]::-moz-range-progress{height:8px;border-radius:5px;background:#4dffa0}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;
+  background:#4dffa0;border:3px solid #04100a}
+#log{font-size:13px;line-height:1.6;height:190px;overflow:auto;background:#010805;
+  border:1px solid #12492a;border-radius:10px;padding:10px;white-space:pre-wrap;
+  word-break:break-all;-webkit-overflow-scrolling:touch}
+#log div{color:#2f9a5e}
+#log div.g{color:#4dffa0}
+#log div.y{color:#ffcf4d}
+#log div.e{color:#ff6b6b}
+#log div.h{color:#9dffca}
+.hint{font-size:13px;color:#2f9a5e;margin-top:12px;line-height:1.6}
+.hint b{color:#ffcf4d;font-weight:600}
+#qr{display:none;margin-top:10px}
+video{width:100%;border-radius:10px;background:#000}
+#qrbox{font-size:13px;color:#2f9a5e;margin-top:10px;word-break:break-all;min-height:16px}
+#bt{font-size:14px;margin-top:10px;color:#2f9a5e}
+#bt.on{color:#4dffa0}
+hr{border:0;border-top:1px dotted #12492a;margin:16px 0}
+.brands{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-top:12px}
+.brands button{padding:12px 2px;font-size:12px;opacity:.45}
+.brands button.on{opacity:1;border-color:#4dffa0;background:#0a2a16}
+.card{position:relative;border-radius:18px;padding:18px;margin-top:12px;overflow:hidden;
+  background:radial-gradient(120% 90% at 88% 6%,rgba(77,255,160,.22),transparent 58%),
+  linear-gradient(140deg,#0a3a22 0%,#06190e 46%,#0d4a28 100%);
+  border:1px solid #2f9a5e;box-shadow:0 8px 24px rgba(0,0,0,.7)}
+.card::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(115deg,transparent 0 22px,rgba(77,255,160,.05) 22px 23px)}
+.card.off{opacity:.4;filter:saturate(.4)}
+.card.voll{border-color:#ffcf4d}
+.crow{display:flex;align-items:center;justify-content:space-between}
+.chip{width:38px;height:28px;border-radius:6px;
+  background:linear-gradient(135deg,#d8ffd0,#4d8f5f 55%,#9fe8ad)}
+.brand{font-style:italic;font-weight:700;letter-spacing:.16em;font-size:16px;color:#9dffca}
+.cnum{margin:18px 0 14px;font-size:17px;letter-spacing:.14em;color:#e2ffef;word-spacing:.3em}
+.cfoot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.clab{font-size:11px;letter-spacing:.14em;color:#39a866}
+.cval{font-size:13px;color:#b6ffd4;margin-top:2px}
+.camt{text-align:right}
+.camt .cval{font-size:17px;color:#4dffa0}
+#cstat{font-size:13px;margin-top:10px;color:#2f9a5e;min-height:34px;line-height:1.5}
+#cstat.g{color:#4dffa0}#cstat.e{color:#ff6b6b}
+.bar{height:10px;border-radius:6px;background:#0a2a16;overflow:hidden;margin-top:10px;
+  border:1px solid #12492a}
+.bar i{display:block;height:100%;width:0%;background:#4dffa0;transition:width .4s}
+.bar i.warn{background:#ffcf4d}
+.bar i.voll{background:#ff6b6b}
+.zeit{font-size:30px;text-align:center;color:#1f6b3b;font-variant-numeric:tabular-nums;
+  font-weight:700;margin-top:10px}
+.zeit.on{color:#4dffa0}
+details{border:1px solid #12492a;border-radius:12px;padding:14px;background:#04100a;
+  margin-bottom:16px}
+summary{font-size:13px;letter-spacing:.14em;color:#2f9a5e;font-weight:700;cursor:pointer;
+  list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+ ";color:#4dffa0}
+details[open] summary::before{content:"− "}
+textarea{width:100%;font:inherit;font-size:11px;line-height:1.45;padding:10px;border-radius:8px;
+  background:#000;color:#2f9a5e;border:1px solid #12492a;margin-top:10px;height:150px}
+label.sch{display:flex;align-items:center;gap:10px;font-size:13px;color:#2f9a5e;margin-top:12px}
+label.sch input{width:20px;height:20px;margin:0;accent-color:#4dffa0}
+.tempo{text-align:center;font-variant-numeric:tabular-nums;color:#1f6b3b;line-height:1;
+  margin-top:6px}
+.tempo b{font-size:54px;font-weight:700;color:#4dffa0}
+.tempo i{font-style:normal;font-size:14px;letter-spacing:.2em;color:#2f9a5e}
+.tempo.roll b{color:#9dffca}
+.buch{font-size:13px;color:#2f9a5e;line-height:1.7;max-height:170px;overflow:auto;
+  border:1px solid #12492a;border-radius:10px;padding:10px;background:#010805;
+  white-space:pre-wrap}
+#fahrtBox{display:none}
+#zusBox{display:none}
+.zus{font-size:14px;color:#9dffca;line-height:1.9}
+.zus b{color:#4dffa0}
+.zus a{color:#4dffa0}
+
+#cockpit{position:fixed;inset:0;z-index:50;background:#000;display:none;
+  flex-direction:column;padding:18px 18px 26px;overflow:auto;overscroll-behavior:contain}
+#cockpit.an{display:flex}
+.ck-top{display:flex;justify-content:space-between;font-size:12px;letter-spacing:.18em;
+  color:#2f9a5e;border-bottom:1px dotted #12492a;padding-bottom:10px}
+.ck-top b{color:#4dffa0;font-weight:700}
+.ck-speed{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:150px;font-variant-numeric:tabular-nums}
+.ck-speed b{font-size:110px;line-height:.95;font-weight:700;color:#4dffa0;letter-spacing:-.03em}
+.ck-speed i{font-style:normal;font-size:15px;letter-spacing:.35em;color:#2f9a5e;margin-top:6px}
+.ck-speed.roll b{color:#d8ffd0}
+.ck-akku{height:12px;border-radius:7px;background:#0a2a16;border:1px solid #12492a;
+  overflow:hidden;margin:6px 0 4px}
+.ck-akku i{display:block;height:100%;width:0%;background:#4dffa0;transition:width .4s}
+.ck-akku i.warn{background:#ffcf4d}
+.ck-akku i.voll{background:#ff6b6b}
+.ck-lab{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.16em;
+  color:#2f9a5e;margin-bottom:12px}
+.ck-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ck-grid div{border:1px solid #12492a;border-radius:11px;padding:12px;background:#04100a}
+.ck-grid span{display:block;font-size:11px;letter-spacing:.16em;color:#2f9a5e}
+.ck-grid b{font-size:22px;color:#4dffa0;font-variant-numeric:tabular-nums;font-weight:700}
+.ck-knopf{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.ck-knopf button{padding:20px 10px}
+.ck-knopf button.wide{grid-column:1/-1}
+#ckStat{font-size:13px;color:#2f9a5e;margin-top:12px;min-height:18px;text-align:center}
+#ckStat.e{color:#ff6b6b}#ckStat.g{color:#4dffa0}
+</style>
+</head>
+<body>
+
+<h1>ROLLERKEY <span>ULTRA</span></h1>
+<div id="status">startet …</div>
+
+<section class="hot">
+  <h2>ROLLER</h2>
+  <div id="bt">nicht verbunden</div>
+  <div class="brands">
+    <button data-b="lime" class="on">LIME</button>
+    <button data-b="voi">VOI</button>
+    <button data-b="bolt">BOLT</button>
+    <button data-b="dott">DOTT</button>
+  </div>
+  <div class="grid">
+    <button class="wide big" id="bUnlock">ENTSPERREN</button>
+    <button class="wide" id="bFahrtmodus">FAHRTMODUS</button>
+    <button class="wide" id="bSchnell">SCHNELLSTART</button>
+    <button id="bLock">SPERREN</button>
+    <button id="bFind">FINDEN</button>
+    <button id="bBeep">PIEPS</button>
+    <button id="bBat">AKKU</button>
+    <button id="bConn">VERBINDEN</button>
+    <button id="bLight">LICHT</button>
+    <button class="wide" id="bScan">QR SCANNEN</button>
+  </div>
+  <div id="qr">
+    <video id="vid" playsinline muted></video>
+    <div class="grid"><button class="wide" id="bQrClose">KAMERA ZU</button></div>
+  </div>
+  <div id="qrbox"></div>
+  <div class="hint"><b>FAHRTMODUS</b> ist die große Anzeige mit Tempo, Akku und Kosten — sie hält
+  den Bildschirm an und lässt sich jederzeit öffnen. Bei <b>Lime</b> nach dem Verbinden
+  <b>3 Sekunden warten</b>. <b>SCHNELLSTART</b> verbindet, entsperrt und bucht in einem Zug.</div>
+</section>
+
+<section id="fahrtBox">
+  <h2>FAHRT</h2>
+  <div class="tempo" id="tempo"><b id="fKmh">0</b> <i>KM/H</i></div>
+  <div class="row"><span>Restzeit</span><b id="fRest">–</b></div>
+  <div class="row"><span>Auto-Sperre</span><b id="fAuto">aus</b></div>
+  <div class="grid">
+    <button id="bCockpit">FAHRTMODUS</button>
+    <button id="bPark" class="danger">PARKEN</button>
+  </div>
+  <div class="hint">Bei <b>Grenze</b> wird automatisch ein neues Konto aufgesetzt.</div>
+</section>
+
+<section id="zusBox">
+  <h2>LETZTE FAHRT</h2>
+  <div class="zus" id="zusammen"></div>
+  <div class="grid">
+    <button id="bWo">WO STEHT ER</button>
+    <button id="bZusWeg">AUSBLENDEN</button>
+  </div>
+</section>
+
+<section>
+  <h2>KONTO + KARTE</h2>
+  <div class="row"><span>Konto</span><b id="uMail">–</b></div>
+  <div class="row"><span>Karte</span><b id="uKarte">–</b></div>
+  <div class="row"><span>Belastung</span><b id="uLast">0,00 €</b></div>
+  <div class="row"><span>Grenze</span><b id="uLimit">50,00 €</b></div>
+  <div class="bar"><i id="cBar"></i></div>
+  <div class="zeit" id="uZeit">00:00</div>
+  <div class="grid">
+    <button class="wide big" id="bStart">ALLES ANLEGEN</button>
+    <button id="bNeu">KARTE WÜRFELN</button>
+    <button id="bKomplett" class="danger">KOMPLETT NEU</button>
+    <button id="bMe">PRÜFEN</button>
+    <button id="bDel" class="danger">KONTO LÖSCHEN</button>
+  </div>
+  <div id="cstat"></div>
+  <div class="hint">ALLES ANLEGEN macht Postfach, Konto, Karte und hinterlegt sie — und entsperrt
+  danach direkt, wenn du verbunden bist. Voi, Bolt und Dott laufen rein über Bluetooth.</div>
+</section>
+
+<section>
+  <h2>KARTE</h2>
+  <div class="card off" id="cardBox">
+    <div class="crow"><span class="chip"></span><span class="brand" id="cBrand">LEER</span></div>
+    <div class="cnum" id="cNum">•••• •••• •••• ••••</div>
+    <div class="cfoot">
+      <div><div class="clab">GÜLTIG</div><div class="cval" id="cExp">--/--</div></div>
+      <div><div class="clab">CVV</div><div class="cval" id="cCvv">---</div></div>
+      <div class="camt"><div class="clab">REST</div><div class="cval" id="cLimit">50,00 €</div></div>
+    </div>
+  </div>
+  <div class="grid">
+    <button id="bBin">BIN-SUCHE</button>
+    <button id="bCardDel">KARTE LÖSCHEN</button>
+    <input id="iBin" placeholder="BIN, 6 bis 8 Ziffern" inputmode="numeric" maxlength="8">
+    <button id="bBinUse">BIN VERWENDEN</button>
+  </div>
+</section>
+
+<section>
+  <h2>EINSTELLUNGEN</h2>
+  <div class="row"><span>Grenze</span><b id="sGrenze">50,00 €</b></div>
+  <input id="iGrenze" type="range" min="10" max="200" step="5" value="50">
+  <div class="row"><span>Start</span><b id="sStart">1,00 €</b></div>
+  <input id="iStart" type="range" min="0" max="300" step="10" value="100">
+  <div class="row"><span>Minute</span><b id="sMin">0,15 €</b></div>
+  <input id="iMin" type="range" min="0" max="100" step="5" value="15">
+  <div class="row"><span>Auto-Sperre</span><b id="sAuto">aus</b></div>
+  <div class="grid">
+    <button id="bAutoMinus">− 5 MIN</button>
+    <button id="bAutoPlus">+ 5 MIN</button>
+  </div>
+  <label class="sch"><input type="checkbox" id="iTon"> Ton und Vibration</label>
+  <div class="hint"><b>Auto-Sperre</b> sperrt nach der eingestellten Zeit von selbst. Die Ortung
+  läuft ohne Karte, nur über den Ortungschip.</div>
+</section>
+
+<section>
+  <h2>FAHRTENBUCH</h2>
+  <div class="buch" id="buch">noch keine Fahrten</div>
+  <div class="row"><span>Fahrten</span><b id="stN">0</b></div>
+  <div class="row"><span>Strecke</span><b id="stKm">0,00 km</b></div>
+  <div class="row"><span>Summe</span><b id="stEur">0,00 €</b></div>
+  <div class="row"><span>Schnitt</span><b id="stSchnitt">–</b></div>
+  <div class="grid">
+    <button id="bRueck">LETZTE ZURÜCK</button>
+    <button id="bBuchKopie">KOPIEREN</button>
+    <button id="bExport">ALS DATEI</button>
+    <button id="bBuchDel" class="danger">BUCH LÖSCHEN</button>
+  </div>
+</section>
+
+<section>
+  <h2>PROTOKOLL</h2>
+  <div id="log"></div>
+  <div class="grid">
+    <button id="bLeer">LEEREN</button>
+    <button id="bDiag">DIAGNOSE</button>
+  </div>
+</section>
+
+<details>
+  <summary>ERWEITERT</summary>
+  <hr>
+  <span class="hint">Die IMEI steht auf dem Aufkleber am Trittbrett (15 Ziffern). Damit rechnet die App
+  das Lime-Anmeldepasswort. Nur nötig, wenn der Roller auf die Rahmen nicht reagiert.</span>
+  <input id="iImei" placeholder="IMEI, 15 Ziffern" inputmode="numeric" maxlength="15">
+  <div class="grid">
+    <button id="bImei">PASSWORT RECHNEN</button>
+    <button id="bAuth">ANMELDEN</button>
+  </div>
+  <div id="pwAus" class="hint"></div>
+  <hr>
+  <span class="hint">Kanal nur umstellen, wenn die Diagnose mehrere zeigt und der erste nicht wirkt.</span>
+  <select id="iKanal"><option value="">automatisch</option></select>
+  <hr>
+  <span class="hint"><b>Pflicht für Lime:</b> Relay. Ohne Relay kommt keine Sitzung zurück und die
+  Anmeldung bleibt bei 422 stehen.</span>
+  <input id="iRelay" placeholder="https://relay.name.workers.dev/?url=" autocapitalize="off">
+  <div class="grid">
+    <button id="bSaveRelay">SPEICHERN</button>
+    <button id="bRelayDel">LÖSCHEN</button>
+    <button class="wide" id="bNet">NETZ TESTEN</button>
+    <button class="wide" id="bFrei">SPERREN AUFHEBEN</button>
+  </div>
+  <button class="wide" id="bCopyW">WORKER-CODE KOPIEREN</button>
+  <textarea id="workerCode" readonly spellcheck="false"></textarea>
+  <hr>
+  <span class="hint">Anmeldelink aus der Mail hier einfügen, wenn die Automatik hängt. Die App zieht das
+  Merkmal selbst aus dem Link.</span>
+  <input id="iLink" placeholder="…magic_link_token=…" autocapitalize="off">
+  <div class="grid">
+    <button id="bLink">LINK VERWENDEN</button>
+    <button id="bCookie" class="danger">SITZUNG WEG</button>
+  </div>
+  <hr>
+  <span class="hint">Fahrzeugkennung aus dem QR. Wird für die echte Buchung bei Lime gebraucht.</span>
+  <input id="iCode" placeholder="Fahrzeugkennung" autocapitalize="off">
+  <div class="grid">
+    <button id="bCode">ÜBERNEHMEN</button>
+    <button id="bBuchen">FAHRT BUCHEN</button>
+  </div>
+  <hr>
+  <span class="hint">OKAI-TESTMODUS und freie Rahmen</span>
+  <div class="grid">
+    <button id="bTest">TESTMODUS</button>
+    <button id="bOkaiPw">OKPWD</button>
+    <button id="bOkaiUn">OKSCM 0</button>
+    <button id="bOkaiLk">OKSCM 1</button>
+    <button class="wide" id="bOkaiBat">OKBCL</button>
+  </div>
+  <label class="sch"><input type="checkbox" id="iTausch"> OKSCM 0 und 1 tauschen</label>
+  <hr>
+  <span class="hint">BLE-KONSOLE</span>
+  <input id="iSvc" placeholder="Dienst-UUID">
+  <input id="iCh" placeholder="Kanal-UUID">
+  <input id="iRaw" placeholder="Hex oder Text">
+  <button class="wide" id="bRaw">SENDEN</button>
+  <hr>
+  <span class="hint">Handynummer nur für Voi und Bolt.</span>
+  <input id="iPhone" placeholder="+49 151 2345678" inputmode="tel">
+  <div class="grid">
+    <button id="bPhone">KONTO ANLEGEN</button>
+    <button id="bOtp">CODE SENDEN</button>
+  </div>
+  <input id="iOtp" placeholder="SMS-Code" inputmode="numeric">
+  <hr>
+  <span class="hint">STRIPE-SCHLÜSSEL — wird normalerweise selbst gefunden.</span>
+  <input id="iPk" placeholder="pk_live_…" autocapitalize="off">
+  <button class="wide" id="bPk">SCHLÜSSEL SPEICHERN</button>
+  <hr>
+  <button class="wide danger" id="bReset">ALLES ZURÜCKSETZEN</button>
+</details>
+
+<div id="cockpit">
+  <div class="ck-top">
+    <span id="ckBrand">ROLLER</span>
+    <span id="ckConn">GETRENNT</span>
+  </div>
+  <div class="ck-speed" id="ckTempo">
+    <b id="ckKmh">0</b>
+    <i>KM/H</i>
+  </div>
+  <div class="ck-akku"><i id="ckAkku"></i></div>
+  <div class="ck-lab"><span>AKKU</span><span id="ckBatLab">–</span></div>
+  <div class="ck-grid">
+    <div><span>ZEIT</span><b id="ckZeit">00:00</b></div>
+    <div><span>KOSTEN</span><b id="ckEur">0,00 €</b></div>
+    <div><span>REST</span><b id="ckRest">50,00 €</b></div>
+    <div><span>STRECKE</span><b id="ckDist">0,00 km</b></div>
+  </div>
+  <div class="ck-knopf">
+    <button id="ckLight">LICHT</button>
+    <button id="ckFind">PIEPS</button>
+    <button class="wide" id="ckUn">ENTSPERREN</button>
+    <button id="ckPark" class="danger">PARKEN</button>
+    <button id="ckZu">ZURÜCK</button>
+  </div>
+  <div id="ckStat"></div>
+</div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const rnd = n => Array.from({length:n},
+  () => "abcdefghijkmnpqrstuvwxyz23456789"[Math.floor(Math.random()*32)]).join("");
+const num = n => Array.from({length:n}, () => String(Math.floor(Math.random()*10))).join("");
+const kurz = e => String(e && e.message ? e.message : e).slice(0, 90);
+const saub = t => String(t || "").replace(/\s+/g, " ").trim().slice(0, 60);
+const saub2 = t => String(t || "").replace(/\s+/g, " ").trim().slice(0, 170);
+const euro = c => (Math.max(0, Math.round(c)) / 100).toFixed(2).replace(".", ",") + " €";
+const hex = b => {
+  if (!b) return "";
+  const a = b instanceof ArrayBuffer ? new Uint8Array(b)
+    : (b.buffer ? new Uint8Array(b.buffer, b.byteOffset, b.byteLength) : new Uint8Array(b));
+  return [...a].map(x => x.toString(16).padStart(2, "0")).join(" ");
+};
+
+const PRE = "rk_";
+const ls = (k, v) => { try { localStorage.setItem(PRE + k, JSON.stringify(v)) } catch(_){} };
+const lg = (k, d) => { try { const v = localStorage.getItem(PRE + k); return v === null ? d : JSON.parse(v) } catch(_){ return d } };
+const lw = k => { try { localStorage.removeItem(PRE + k) } catch(_){} };
+
+let DEV = lg("dev", null);
+if (!DEV){
+  DEV = (crypto.randomUUID ? crypto.randomUUID() : rnd(8) + "-" + Date.now());
+  ls("dev", DEV);
+}
+function devNeu(){
+  DEV = crypto.randomUUID ? crypto.randomUUID() : rnd(8) + "-" + Date.now();
+  ls("dev", DEV);
+}
+
+const S = {
+  brand:"lime", karten:{}, pk:{}, keyOk:"", acct:{}, fach:{}, tot:{}, fehler:{}, gut:"",
+  hostTot:{}, relay:"", prov:false, fachLauf:false, erneuert:false, pw:"", pwU:"", imei:"",
+  seq:0, okseq:0, srv:null, dev:null, chans:[], best:null, antworten:0, gesamt:0, puffer:[],
+  txt:"", offen:false, akku:null, okai:false, cam:null, t0:0, ping:0, angemeldet:false, licht:false,
+  ck:"", okaiTausch:false, okaiLetzt:"", code:"", rideId:"", buch:[], gps:null, wake:null,
+  audio:null, verbinde:false, befehlLauf:false, akkuWarn:false, autoGelaufen:false,
+  findLauf:false, gpsAus:false, gpsVersuche:0, cockpit:false, akkuT:0, ckTimer:0,
+  sitzungLauf:false, loginWeg:0,
+  letzteWo:null, letzteZus:"",
+  grenze:5000, start:100, minute:15, autolock:0, ton:true,
+  trip:{ dist:0, max:0, kmh:0, fix:0, pos:null, a75:false, a100:false },
+  fahrt:{ start:0, laufend:false, timer:0 }
+};
+
+function log(t, k){
+  const d = document.createElement("div");
+  d.className = k || "";
+  d.textContent = new Date().toLocaleTimeString("de-DE") + "  " + t;
+  $("log").appendChild(d);
+  $("log").scrollTop = 1e9;
+  while ($("log").children.length > 400) $("log").removeChild($("log").firstChild);
+}
+const stat = (t, k) => { $("status").textContent = t; $("status").className = k || "" };
+const cstat = (t, k) => { $("cstat").textContent = t; $("cstat").className = k || "" };
+const ckstat = (t, k) => { $("ckStat").textContent = t; $("ckStat").className = k || "" };
+
+(function(){
+  let letzter = 0;
+  document.addEventListener("touchend", e => {
+    const jetzt = Date.now();
+    if (jetzt - letzter < 320 && e.touches.length === 0){
+      if (!e.target.closest("input,textarea,select")) e.preventDefault();
+    }
+    letzter = jetzt;
+  }, { passive:false });
+  ["gesturestart", "gesturechange", "gestureend"].forEach(n =>
+    document.addEventListener(n, e => e.preventDefault(), { passive:false }));
+})();
+
+/* ═══════ NETZ ═══════ */
+
+const POSTWEGE = [
+  { n:"corsmirror",  f: u => "https://corsmirror.com/v1?url=" + encodeURIComponent(u) },
+  { n:"x2u",         f: u => "https://cors.x2u.in/" + u },
+  { n:"codetabs",    f: u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u) },
+  { n:"cf-anywhere", f: u => "https://test.cors.workers.dev/?" + u },
+  { n:"cors.dev",    f: u => "https://proxy.cors.dev/" + u, auth:false },
+  { n:"corsproxy",   f: u => "https://corsproxy.io/?url=" + encodeURIComponent(u) }
+];
+const GETWEGE = [
+  { n:"corsmirror",  f: u => "https://corsmirror.com/v1?url=" + encodeURIComponent(u) },
+  { n:"x2u",         f: u => "https://cors.x2u.in/" + u },
+  { n:"codetabs",    f: u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u) },
+  { n:"cf-anywhere", f: u => "https://test.cors.workers.dev/?" + u },
+  { n:"cors.dev",    f: u => "https://proxy.cors.dev/" + u, auth:false },
+  { n:"allorigins",  f: u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u) }
+];
+
+const CORS_OK = ["api.mail.tm", "api.mail.gw", "api.guerrillamail.com",
+                 "api.stripe.com", "api.catchmail.io"];
+
+const MUELL = /invalid_origin|domain_not_registered|too many requests|rate limit|bad gateway|just a moment|access denied|missing_api_key|api key required|not allowed/i;
+
+const gesperrt = n => (S.tot[n] || 0) > Date.now();
+const sperre = (n, ms) => { S.tot[n] = Date.now() + ms };
+
+function daneben(n){
+  S.fehler[n] = (S.fehler[n] || 0) + 1;
+  if (S.fehler[n] >= 2) sperre(n, n === "relay" ? 8000 : 20000);
+}
+function gutGelaufen(n){
+  S.fehler[n] = 0;
+  S.tot[n] = 0;
+  if (S.gut !== n){ S.gut = n; ls("gut", n) }
+}
+
+function wege(post, url, auth){
+  const l = [];
+  let host = "";
+  try { host = new URL(url).hostname } catch(_){}
+  const direkt = { n:"direkt", f: u => u };
+  const eigen = CORS_OK.indexOf(host) >= 0;
+
+  if (S.relay) l.push({ n:"relay", f: u => S.relay + encodeURIComponent(u) });
+  if (eigen) l.push(direkt);
+
+  const liste = (post ? POSTWEGE : GETWEGE)
+    .filter(w => !auth || w.auth !== false)
+    .slice();
+  liste.sort((a, b) => (a.n === S.gut ? -1 : b.n === S.gut ? 1 : 0));
+  for (const w of liste) l.push(w);
+
+  if (!eigen) l.push(direkt);
+  return l;
+}
+
+function echt(res, text){
+  const t = (text || "").trim();
+  if (res.status < 400) return true;
+  if ([400, 404, 409, 422].indexOf(res.status) >= 0) return true;
+  if ([401, 403, 405, 429].indexOf(res.status) >= 0){
+    if (/^[\[{]/.test(t)) return true;
+    if (t.length > 250 && !MUELL.test(t)) return true;
+    return false;
+  }
+  return false;
+}
+
+function ckMerken(rohWert){
+  const teile = String(rohWert).split("\n");
+  const paare = (S.ck ? S.ck.split("; ") : []).filter(Boolean);
+  for (const z of teile){
+    const kv = String(z).split(";")[0].trim();
+    if (!kv || kv.indexOf("=") < 0) continue;
+    const name = kv.slice(0, kv.indexOf("=")).trim();
+    const i = paare.findIndex(p => p.slice(0, p.indexOf("=")) === name);
+    if (i >= 0) paare[i] = kv; else paare.push(kv);
+  }
+  S.ck = paare.join("; ");
+  ls("ck", S.ck);
+}
+
+async function roh(url, o){
+  o = o || {};
+  const post = (o.method || "GET").toUpperCase() !== "GET";
+  const auth = !!(o.headers && o.headers.Authorization);
+  const reihe = wege(post, url, auth);
+
+  if (reihe.every(w => gesperrt(w.n))){
+    S.tot = {}; S.fehler = {};
+    log("alle Wege gesperrt · Sperren aufgehoben", "y");
+  }
+
+  let last = null, probiert = 0;
+
+  for (const w of reihe){
+    if (gesperrt(w.n)) continue;
+    probiert++;
+    try {
+      const ctl = new AbortController();
+      const t = setTimeout(() => ctl.abort(), o.frist || 15000);
+      const res = await fetch(w.f(url), {
+        method: o.method || "GET",
+        headers: o.headers || {},
+        body: o.body,
+        signal: ctl.signal,
+        redirect: "follow",
+        credentials: "omit"
+      });
+      clearTimeout(t);
+      const text = await res.text();
+
+      const ck = res.headers.get("x-set-cookie");
+      if (ck) ckMerken(ck);
+
+      const eigenerFehler = (res.status === 502 && /relay_fail/.test(text));
+      const traegt = w.n === "relay"
+        ? !eigenerFehler
+        : (echt(res, text) && !MUELL.test(text.slice(0, 200)));
+
+      if (!traegt){
+        daneben(w.n);
+        log("Weg " + w.n + " taugt nicht · HTTP " + res.status, "y");
+        last = new Error("Weg " + w.n + " taugt nicht");
+        continue;
+      }
+      gutGelaufen(w.n);
+      let json = null;
+      try { json = JSON.parse(text) } catch(_){}
+      return { ok: res.ok, status: res.status, text: text, json: json, weg: w.n };
+    } catch(e){
+      daneben(w.n);
+      log("Weg " + w.n + " · " + kurz(e), "y");
+      last = e;
+    }
+  }
+  if (!probiert) throw new Error(auth && !S.relay
+    ? "alle Wege gesperrt oder ohne Anmeldung · RELAY einrichten"
+    : "alle Wege gesperrt · SPERREN AUFHEBEN");
+  throw last || new Error("kein Weg frei");
+}
+
+const BASIS = {
+  "Accept":"application/json", "Platform":"Android", "App-Version":"3.248.1", "X-Device-Token":DEV
+};
+
+function H(t){
+  const h = Object.assign({}, BASIS, { "Content-Type":"application/json" });
+  if (t) h["Authorization"] = t.indexOf(" ") > 0 ? t : "Bearer " + t;
+  if (S.ck) h["Cookie"] = S.ck;
+  return h;
+}
+function HF(){
+  const h = Object.assign({}, BASIS, { "Content-Type":"application/x-www-form-urlencoded; charset=utf-8" });
+  if (S.ck) h["Cookie"] = S.ck;
+  return h;
+}
+const J = b => JSON.stringify(b);
+
+/* ═══════ DES ═══════ */
+
+const DES = (() => {
+  const PC1=[57,49,41,33,25,17,9,1,58,50,42,34,26,18,10,2,59,51,43,35,27,19,11,3,
+             60,52,44,36,63,55,47,39,31,23,15,7,62,54,46,38,30,22,14,6,61,53,45,37,
+             29,21,13,5,28,20,12,4];
+  const PC2=[14,17,11,24,1,5,3,28,15,6,21,10,23,19,12,4,26,8,16,7,27,20,13,2,
+             41,52,31,37,47,55,30,40,51,45,33,48,44,49,39,56,34,53,46,42,50,36,29,32];
+  const IP=[58,50,42,34,26,18,10,2,60,52,44,36,28,20,12,4,62,54,46,38,30,22,14,6,
+            64,56,48,40,32,24,16,8,57,49,41,33,25,17,9,1,59,51,43,35,27,19,11,3,
+            61,53,45,37,29,21,13,5,63,55,47,39,31,23,15,7];
+  const FP=[40,8,48,16,56,24,64,32,39,7,47,15,55,23,63,31,38,6,46,14,54,22,62,30,
+            37,5,45,13,53,21,61,29,36,4,44,12,52,20,60,28,35,3,43,11,51,19,59,27,
+            34,2,42,10,50,18,58,26,33,1,41,9,49,17,57,25];
+  const E=[32,1,2,3,4,5,4,5,6,7,8,9,8,9,10,11,12,13,12,13,14,15,16,17,
+           16,17,18,19,20,21,20,21,22,23,24,25,24,25,26,27,28,29,28,29,30,31,32,1];
+  const P=[16,7,20,21,29,12,28,17,1,15,23,26,5,18,31,10,2,8,24,14,32,27,3,9,
+           19,13,30,6,22,11,4,25];
+  const SH=[1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1];
+  const SB=[
+   [14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7, 0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8,
+    4,1,14,8,13,6,2,11,15,12,9,7,3,10,5,0, 15,12,8,2,4,9,1,7,5,11,3,14,10,0,6,13],
+   [15,1,8,14,6,11,3,4,9,7,2,13,12,0,5,10, 3,13,4,7,15,2,8,14,12,0,1,10,6,9,11,5,
+    0,14,7,11,10,4,13,1,5,8,12,6,9,3,2,15, 13,8,10,1,3,15,4,2,11,6,7,12,0,5,14,9],
+   [10,0,9,14,6,3,15,5,1,13,12,7,11,4,2,8, 13,7,0,9,3,4,6,10,2,8,5,14,12,11,15,1,
+    13,6,4,9,8,15,3,0,11,1,2,12,5,10,14,7, 1,10,13,0,6,9,8,7,4,15,14,3,11,5,2,12],
+   [7,13,14,3,0,6,9,10,1,2,8,5,11,12,4,15, 13,8,11,5,6,15,0,3,4,7,2,12,1,10,14,9,
+    10,6,9,0,12,11,7,13,15,1,3,14,5,2,8,4, 3,15,0,6,10,1,13,8,9,4,5,11,12,7,2,14],
+   [2,12,4,1,7,10,11,6,8,5,3,15,13,0,14,9, 14,11,2,12,4,7,13,1,5,0,15,10,3,9,8,6,
+    4,2,1,11,10,13,7,8,15,9,12,5,6,3,0,14, 11,8,12,7,1,14,2,13,6,15,0,9,10,4,5,3],
+   [12,1,10,15,9,2,6,8,0,13,3,4,14,7,5,11, 10,15,4,2,7,12,9,5,6,1,13,14,0,11,3,8,
+    9,14,15,5,2,8,12,3,7,0,4,10,1,13,11,6, 4,3,2,12,9,5,15,10,11,14,1,7,6,0,8,13],
+   [4,11,2,14,15,0,8,13,3,12,9,7,5,10,6,1, 13,0,11,7,4,9,1,10,14,3,5,12,2,15,8,6,
+    1,4,11,13,12,3,7,14,10,15,6,8,0,5,9,2, 6,11,13,8,1,4,10,7,9,5,0,15,14,2,3,12],
+   [13,2,8,4,6,15,11,1,10,9,3,14,5,0,12,7, 1,15,13,8,10,3,7,4,12,5,6,11,0,14,9,2,
+    7,11,4,1,9,12,14,2,0,6,10,13,15,3,5,8, 2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11]
+  ];
+
+  const perm = (b, t) => t.map(i => b[i-1]);
+  const schub = (b, n) => b.slice(n).concat(b.slice(0, n));
+  const zuBits = a => { const o = [];
+    for (const x of a) for (let i = 7; i >= 0; i--) o.push((x >> i) & 1); return o };
+  const zuBytes = b => { const o = new Uint8Array(b.length / 8);
+    for (let i = 0; i < o.length; i++){
+      let v = 0;
+      for (let j = 0; j < 8; j++) v = (v << 1) | b[i*8+j];
+      o[i] = v;
+    }
+    return o };
+
+  function block(schluessel, daten){
+    const k = perm(zuBits(schluessel), PC1);
+    let c = k.slice(0, 28), d = k.slice(28);
+    const runden = [];
+    for (let r = 0; r < 16; r++){
+      c = schub(c, SH[r]);
+      d = schub(d, SH[r]);
+      runden.push(perm(c.concat(d), PC2));
+    }
+    const b = perm(zuBits(daten), IP);
+    let L = b.slice(0, 32), R = b.slice(32);
+    for (let r = 0; r < 16; r++){
+      const x = perm(R, E).map((v, i) => v ^ runden[r][i]);
+      const s = [];
+      for (let i = 0; i < 8; i++){
+        const q = x.slice(i*6, i*6+6);
+        const zeile = (q[0] << 1) | q[5];
+        const spalte = (q[1] << 3) | (q[2] << 2) | (q[3] << 1) | q[4];
+        const v = SB[i][zeile*16 + spalte];
+        s.push((v >> 3) & 1, (v >> 2) & 1, (v >> 1) & 1, v & 1);
+      }
+      const f = perm(s, P);
+      const nR = L.map((v, i) => v ^ f[i]);
+      L = R;
+      R = nR;
+    }
+    return zuBytes(perm(R.concat(L), FP));
+  }
+
+  const vonHex = h => new Uint8Array(h.match(/../g).map(x => parseInt(x, 16)));
+  const nachHex = a => [...a].map(x => x.toString(16).padStart(2, "0")).join("").toUpperCase();
+  const SCHLUESSEL = new Uint8Array([0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88]);
+
+  function selbsttest(){
+    const v = [
+      ["0123456789ABCDEF", "4E6F772069732074", "3FA40E8A984D4815"],
+      ["133457799BBCDFF1", "0123456789ABCDEF", "85E813540F0AB405"]
+    ];
+    let gut = 0;
+    for (const [k, d, soll] of v){
+      if (nachHex(block(vonHex(k), vonHex(d))) === soll) gut++;
+    }
+    return { gut:gut, soll:v.length };
+  }
+
+  function passwort(imei){
+    const t = new TextEncoder().encode(String(imei).replace(/\D/g, "").padEnd(16, "0").slice(0, 16));
+    return nachHex(block(SCHLUESSEL, t).slice(4));
+  }
+
+  return { block:block, selbsttest:selbsttest, passwort:passwort,
+           schluessel:SCHLUESSEL, vonHex:vonHex, nachHex:nachHex };
+})();
+
+/* ═══════ POSTFÄCHER ═══════ */
+
+const GU = "https://api.guerrillamail.com/ajax.php";
+
+function guLesen(sid){
+  let n = 0;
+  return async () => {
+    n++;
+    const c = await roh(GU + "?f=check_email&seq=" + n + "&sid_token=" + encodeURIComponent(sid));
+    const m = c.json && c.json.list && c.json.list[0];
+    if (!m) return "";
+    const f = await roh(GU + "?f=fetch_email&email_id=" + encodeURIComponent(m.mail_id) +
+      "&sid_token=" + encodeURIComponent(sid));
+    return [f.json && f.json.mail_subject, f.json && f.json.mail_body,
+            f.json && f.json.mail_excerpt, f.text].filter(Boolean).join(" ");
+  };
+}
+
+async function fachGuerrilla(){
+  const r = await roh(GU + "?f=get_email_address&lang=de&ip=127.0.0.1&agent=rollerkey");
+  const j = r.json;
+  if (!j || !j.email_addr) throw new Error("guerrilla " + r.status);
+  const sid = j.sid_token || "";
+  if (!sid) throw new Error("guerrilla ohne Sitzung");
+  ls("fach_" + S.brand, { adr:j.email_addr, sid:sid, art:"gu" });
+  return { adr:j.email_addr, lesen:guLesen(sid) };
+}
+
+async function fachCatch(){
+  const doms = ["catchmail.io", "mailistry.com", "zeppost.com"];
+  const dom = doms[Math.floor(Math.random() * doms.length)];
+  const adr = "rk" + rnd(10) + "@" + dom;
+  const basis = "https://api.catchmail.io/api/v1/";
+  const lesen = async () => {
+    const r = await roh(basis + "mailbox?address=" + encodeURIComponent(adr));
+    const m = r.json && r.json.messages && r.json.messages[0];
+    if (!m) return "";
+    const v = await roh(basis + "message/" + encodeURIComponent(m.id) +
+      "?mailbox=" + encodeURIComponent(adr));
+    const j = v.json || {};
+    return [m.subject, j.body && j.body.text, j.body && j.body.html, v.text]
+      .filter(Boolean).join(" ");
+  };
+  ls("fach_" + S.brand, { adr:adr, art:"catch" });
+  return { adr:adr, lesen:lesen };
+}
+
+function hydraLesen(host, tok){
+  return async () => {
+    const r = await roh("https://" + host + "/messages", { headers:H(tok) });
+    const m = r.json && r.json["hydra:member"] && r.json["hydra:member"][0];
+    if (!m) return "";
+    const v = await roh("https://" + host + "/messages/" + m.id, { headers:H(tok) });
+    return [v.text, JSON.stringify(v.json || {})].join(" ");
+  };
+}
+
+function fachHydra(host){
+  return async () => {
+    if ((S.hostTot[host] || 0) > Date.now()) throw new Error(host + " wartet noch");
+    const d = await roh("https://" + host + "/domains");
+    if (d.status === 429 || d.status >= 500){
+      S.hostTot[host] = Date.now() + (d.status === 429 ? 180000 : 120000);
+      throw new Error(host + " " + d.status);
+    }
+    const liste = (d.json && d.json["hydra:member"]) || [];
+    if (!liste.length) throw new Error("keine Domain");
+    const dom = liste[Math.floor(Math.random() * liste.length)].domain;
+    const adr = rnd(10) + "@" + dom;
+    const pw = rnd(14);
+    const c = await roh("https://" + host + "/accounts",
+      { method:"POST", headers:H(), body:J({ address:adr, password:pw }) });
+    if (!c.ok || !c.json){
+      if (c.status === 429) S.hostTot[host] = Date.now() + 180000;
+      throw new Error(host + " " + c.status);
+    }
+    const t = await roh("https://" + host + "/token",
+      { method:"POST", headers:H(), body:J({ address:adr, password:pw }) });
+    const tok = t.json && t.json.id;
+    if (!tok) throw new Error("kein Token");
+    ls("fach_" + S.brand, { adr:adr, tok:tok, art:"hydra", host:host });
+    return { adr:adr, lesen:hydraLesen(host, tok) };
+  };
+}
+
+const FAECHER = [fachGuerrilla, fachCatch,
+                 fachHydra("api.mail.gw"), fachHydra("api.mail.tm")];
+
+function fachAusSpeicher(){
+  const x = lg("fach_" + S.brand, null);
+  if (!x || !x.adr) return null;
+  if (x.art === "gu" && x.sid) return { adr:x.adr, lesen:guLesen(x.sid) };
+  if (x.art === "hydra" && x.tok && x.host) return { adr:x.adr, lesen:hydraLesen(x.host, x.tok) };
+  if (x.art === "catch"){
+    const adr = x.adr;
+    return {
+      adr:adr,
+      lesen: async () => {
+        const b = "https://api.catchmail.io/api/v1/";
+        const r = await roh(b + "mailbox?address=" + encodeURIComponent(adr));
+        const m = r.json && r.json.messages && r.json.messages[0];
+        if (!m) return "";
+        const v = await roh(b + "message/" + encodeURIComponent(m.id) +
+          "?mailbox=" + encodeURIComponent(adr));
+        const j = v.json || {};
+        return [m.subject, j.body && j.body.text, j.body && j.body.html, v.text]
+          .filter(Boolean).join(" ");
+      }
+    };
+  }
+  return null;
+}
+
+async function fachBauen(){
+  if (S.fachLauf) throw new Error("Postfach läuft schon");
+  S.fachLauf = true;
+  try {
+    for (const f of FAECHER){
+      let x = null;
+      try { x = await f() } catch(e){ log("Postfachweg: " + kurz(e), "y"); continue }
+      if (!x || !x.adr || typeof x.lesen !== "function") continue;
+      try { await x.lesen() } catch(e){
+        log("Postfach tot: " + kurz(e), "y");
+        continue;
+      }
+      S.fach[S.brand] = x;
+      log("Postfach: " + x.adr, "g");
+      return x;
+    }
+    throw new Error("kein Postfach erreichbar");
+  } finally { S.fachLauf = false }
+}
+
+async function fachHolen(){
+  if (S.fach[S.brand] && S.fach[S.brand].lesen) return S.fach[S.brand];
+  const alt = fachAusSpeicher();
+  if (alt){ S.fach[S.brand] = alt; return alt }
+  return await fachBauen();
+}
+
+async function fachWeg(){
+  S.fach[S.brand] = null;
+  lw("fach_" + S.brand);
+}
+
+/* ═══════ MARKEN ═══════ */
+
+const V = {
+  lime: { name:"LIME", base:"https://web-production.lime.bike/api/rider", okai:false },
+  voi:  { name:"VOI",  base:"https://api.voiapp.io/v1", okai:true },
+  bolt: { name:"BOLT", base:"https://node.bolt.eu", okai:true },
+  dott: { name:"DOTT", base:"https://api.ridedott.com", okai:true }
+};
+
+const PKR = /pk_live_[A-Za-z0-9]{16,}/g;
+const PK_FORM = /^pk_(live|test)_[A-Za-z0-9]{16,}$/;
+
+async function keySuchen(){
+  const seiten = ["https://web-production.lime.bike/", "https://lime.bike/", "https://www.lime.bike/"];
+  for (const s of seiten){
+    let t = "";
+    try { const r = await roh(s); t = r.text } catch(_){ continue }
+    const d = t.match(PKR);
+    if (d) return d[0];
+    const srcs = [...t.matchAll(/src="([^"]+\.js[^"]*)"/g)].map(m => m[1]).slice(0, 8);
+    for (const x of srcs){
+      let u;
+      try { u = new URL(x, s).href } catch(_){ continue }
+      try {
+        const r2 = await roh(u);
+        const m = r2.text && r2.text.match(PKR);
+        if (m) return m[0];
+      } catch(_){}
+    }
+  }
+  return "";
+}
+
+async function keyTest(k){
+  if (!PK_FORM.test(k)) return { ok:false, grund:"form" };
+  try {
+    const f = new URLSearchParams();
+    f.set("key", k);
+    f.set("card[number]", "4242424242424242");
+    f.set("card[exp_month]", "12");
+    f.set("card[exp_year]", "2032");
+    f.set("card[cvc]", "123");
+    const r = await fetch("https://api.stripe.com/v1/tokens", {
+      method:"POST", body:f,
+      headers:{ "Content-Type":"application/x-www-form-urlencoded" }
+    });
+    const j = await r.json().catch(() => null);
+    if (j && j.id) return { ok:true };
+    if (j && j.error){
+      const m = (j.error.message || "") + " " + (j.error.code || "");
+      if (/api key|invalid.*key|api_key/i.test(m)) return { ok:false, grund:"key" };
+      return { ok:false, grund:"karte" };
+    }
+    return { ok:false, grund:"?" };
+  } catch(e){ return { ok:false, grund:"netz" } }
+}
+
+async function keySichern(){
+  if (S.keyOk) return S.keyOk;
+  const kand = [];
+  if (S.pk.lime && PK_FORM.test(S.pk.lime)) kand.push(S.pk.lime);
+  const frisch = await keySuchen();
+  if (frisch && kand.indexOf(frisch) < 0) kand.push(frisch);
+
+  for (const k of kand){
+    const r = await keyTest(k);
+    if (r.ok || r.grund === "karte"){
+      S.keyOk = k;
+      S.pk.lime = k;
+      ls("pk", S.pk);
+      log("Schlüssel gefunden · " + k.slice(0, 12) + "…", "g");
+      return k;
+    }
+    log("Schlüssel " + k.slice(0, 12) + "… · " + r.grund, "y");
+  }
+  throw new Error("kein gültiger Stripe-Schlüssel");
+}
+
+/* ═══════ LIME ═══════ */
+
+async function limeSitzung(){
+  if (S.ck) return true;
+  if (S.sitzungLauf) return false;
+  S.sitzungLauf = true;
+  try {
+    const wege = ["https://lime.bike/", "https://www.lime.bike/", V.lime.base + "/v1/users/bootstrap"];
+    for (const u of wege){
+      try {
+        await roh(u, { headers:H() });
+        if (S.ck){ log("Sitzung gesetzt", "g"); return true }
+      } catch(_){}
+    }
+    log("keine Sitzung bekommen · Relay prüfen", "y");
+    return false;
+  } finally { S.sitzungLauf = false }
+}
+
+async function limeMail(adr){
+  const f = new URLSearchParams();
+  f.set("email", adr);
+  f.set("user_agreement_country_code", "DE");
+  f.set("user_agreement_version", "4");
+  const r = await roh(V.lime.base + "/v2/onboarding/magic-link",
+    { method:"POST", headers:HF(), body:f.toString() });
+  if (r.ok && r.json){ log("Mail angefordert · " + r.weg, "g"); return true }
+  log("magic-link · " + r.status + " · " + saub(r.text), "y");
+  if (r.status === 200) return true;
+  throw new Error("magic-link " + r.status);
+}
+
+function tokenAus(text){
+  const t = String(text || "")
+    .replace(/&amp;/g, "&")
+    .replace(/&#x3D;/gi, "=")
+    .replace(/&quot;/g, '"')
+    .replace(/=3D/g, "=");
+  const out = [];
+  const rein = v => {
+    let x = String(v || "").trim();
+    try { x = decodeURIComponent(x) } catch(_){}
+    if (x.length >= 18 && !/^https?:/i.test(x) && out.indexOf(x) < 0) out.push(x);
+  };
+  for (const m of t.matchAll(/magic_link_token[=:]\s*["']?([A-Za-z0-9._~\-]{16,})/gi)) rein(m[1]);
+  for (const m of t.matchAll(/[?&]token=([A-Za-z0-9._\-]{18,})/gi)) rein(m[1]);
+  for (const m of t.matchAll(/\beyJ[A-Za-z0-9._\-]{40,}/g)) rein(m[0]);
+  return out.slice(0, 6);
+}
+
+function limeForm(obj){
+  const f = new URLSearchParams();
+  for (const k in obj) if (obj[k]) f.set(k, obj[k]);
+  return f.toString();
+}
+
+async function limeLogin(tok){
+  const a = acct() || {};
+  const mail = a.e || "";
+  const b = V.lime.base;
+
+  const versuche = [
+    { p:"/v2/onboarding/login", m:"POST", h:HF, d:() => limeForm({ magic_link_token: tok }) },
+    { p:"/v2/onboarding/login", m:"POST", h:HF, d:() => limeForm({ magic_link_token: tok, email: mail }) },
+    { p:"/v2/onboarding/login", m:"POST", h:HF, d:() => limeForm({ token: tok, email: mail }) },
+    { p:"/v2/onboarding/login?magic_link_token=" + encodeURIComponent(tok), m:"POST", h:HF, d:() => "" },
+    { p:"/v2/onboarding/login", m:"POST", h:H, d:() => J({ magic_link_token: tok, email: mail }) },
+    { p:"/v2/onboarding/magic-link/verify", m:"POST", h:HF, d:() => limeForm({ magic_link_token: tok }) },
+    { p:"/v2/onboarding/magic-link/verify?magic_link_token=" + encodeURIComponent(tok), m:"GET", h:H, d:() => null }
+  ];
+
+  if (S.loginWeg > 0 && versuche[S.loginWeg]){
+    versuche.unshift(versuche.splice(S.loginWeg, 1)[0]);
+  }
+
+  let letzte = "";
+  for (let i = 0; i < versuche.length; i++){
+    const v = versuche[i];
+    try {
+      const r = await roh(b + v.p, { method:v.m, headers:v.h(), body:v.d() || undefined });
+      const t = r.json && (r.json.token || (r.json.data && r.json.data.token));
+      if (t){
+        S.loginWeg = i; ls("loginweg", i);
+        log("Login trägt · " + v.p.split("?")[0].replace("/v2/onboarding/", ""), "g");
+        return t;
+      }
+      letzte = r.status + " · " + saub2(r.text);
+      if (r.status === 429) break;
+    } catch(e){ letzte = kurz(e) }
+  }
+  throw new Error("login " + letzte);
+}
+
+async function limeWallets(t){
+  const r = await roh(V.lime.base + "/v1/wallets", { headers:H(t) });
+  if (!r.ok) return null;
+  const w = r.json && (r.json.wallet || (r.json.data && r.json.data.wallet));
+  if (!w) return 0;
+  const b = w.balance_cents !== undefined ? w.balance_cents : w.balance;
+  const n = Number(b);
+  return isFinite(n) ? n / 100 : 0;
+}
+
+async function limeBlock(t){
+  try {
+    const r = await roh(V.lime.base +
+      "/v1/views/rider_map_start_blockers?user_latitude=52.52&user_longitude=13.405",
+      { headers:H(t) });
+    if (!r.ok) return "";
+    const s = JSON.stringify(r.json || {});
+    if (/"payment/i.test(s)) return "Zahlung offen";
+    if (/"block/i.test(s)) return "Start gesperrt";
+    return "";
+  } catch(_){ return "" }
+}
+
+async function limeCard(t, tok){
+  const k = S.karten.lime;
+  const formen = [
+    { pfad:"/v1/payment_methods", body:{ stripe_token:tok } },
+    { pfad:"/v1/payment_methods", body:{ token:tok } },
+    { pfad:"/v1/payment_methods", body:{ payment_method_id:tok } },
+    { pfad:"/v2/payment_methods", body:{
+        payment_method:{ card:{
+          number:k.num, exp_month:k.exp.split("/")[0],
+          exp_year:"20" + k.exp.split("/")[1], cvc:k.cvv } },
+        token:tok } }
+  ];
+  for (const f of formen){
+    const r = await roh(V.lime.base + f.pfad, { method:"POST", headers:H(t), body:J(f.body) });
+    log("hinterlegen " + f.pfad + " · " + r.status + " " + saub(r.text), r.ok && r.json ? "g" : "y");
+    if (r.ok && r.json) return true;
+  }
+  throw new Error("Karte wurde nicht angenommen");
+}
+
+async function limeBuchen(){
+  const a = acct();
+  if (!a || !a.t) return "";
+  if (!S.code) return "";
+  const wege = [
+    { p:"/v1/rides", b:{ vehicle_id:S.code } },
+    { p:"/v1/rides", b:{ bike_id:S.code } },
+    { p:"/v1/bikes/" + encodeURIComponent(S.code) + "/ride", b:{} }
+  ];
+  for (const w of wege){
+    try {
+      const r = await roh(V.lime.base + w.p, { method:"POST", headers:H(a.t), body:J(w.b) });
+      log("Buchung " + w.p + " · " + r.status + " " + saub(r.text), r.ok ? "g" : "y");
+      if (r.ok){
+        const id = (r.json && (r.json.id || (r.json.data && r.json.data.id))) || "ok";
+        S.rideId = String(id);
+        return S.rideId;
+      }
+    } catch(_){}
+  }
+  return "";
+}
+
+/* ═══════ KARTE ═══════ */
+
+const BIN = {
+  visa:["492900","492901","492902","415000","415001","453176","453177","403300","403301"],
+  master:["510510","510511","543210","543211","530000","530001","222300","222301"]
+};
+
+function luhn(n){
+  let s = 0, alt = false;
+  for (let i = n.length - 1; i >= 0; i--){
+    let d = +n[i];
+    if (alt){ d *= 2; if (d > 9) d -= 9 }
+    s += d;
+    alt = !alt;
+  }
+  return s % 10 === 0;
+}
+function pruefziffer(n){
+  for (let c = 0; c < 10; c++) if (luhn(n + c)) return n + c;
+  return n;
+}
+
+function karteBauen(bin){
+  const liste = Math.random() < 0.7 ? BIN.visa : BIN.master;
+  const b = bin || liste[Math.floor(Math.random() * liste.length)];
+  const nummer = pruefziffer(b + num(Math.max(0, 15 - b.length)));
+  const monat = String(1 + Math.floor(Math.random() * 12)).padStart(2, "0");
+  const jahr = String(new Date().getFullYear() + 3 + Math.floor(Math.random() * 3)).slice(2);
+  return {
+    bin:b, num:nummer, exp:monat + "/" + jahr, cvv:num(3),
+    held:"MAX MUSTERMANN",
+    brand:/^4/.test(nummer) ? "VISA" : "MASTERCARD",
+    tok:"", ok:false, hinterlegt:false, last:0
+  };
+}
+
+function sekunden(){
+  return S.fahrt.start ? Math.floor((Date.now() - S.fahrt.start) / 1000) : 0;
+}
+function belastung(){
+  const k = S.karten[S.brand];
+  const basis = (k && k.last) || 0;
+  const lauf = S.fahrt.start ? (S.start + Math.round(sekunden() * S.minute / 60)) : 0;
+  return Math.min(S.grenze, Math.round(basis + lauf));
+}
+function uhr(s){
+  const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = s % 60;
+  const p = n => String(n).padStart(2, "0");
+  return (h ? p(h) + ":" : "") + p(m) + ":" + p(x);
+}
+function kmText(m){
+  return (m / 1000).toFixed(2).replace(".", ",") + " km";
+}
+
+function distanz(a, b, c, d){
+  const R = 6371000;
+  const p = Math.PI / 180;
+  const x = (c - a) * p, y = (d - b) * p;
+  const s = Math.sin(x/2) * Math.sin(x/2) +
+    Math.cos(a*p) * Math.cos(c*p) * Math.sin(y/2) * Math.sin(y/2);
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(s)));
+}
+
+/* ═══════ TON ═══════ */
+
+function ton(freq, ms){
+  if (!S.ton) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!S.audio) S.audio = new AC();
+    if (S.audio.state === "suspended") S.audio.resume();
+    const o = S.audio.createOscillator();
+    const g = S.audio.createGain();
+    o.type = "sine";
+    o.frequency.value = freq;
+    g.gain.value = 0.09;
+    o.connect(g);
+    g.connect(S.audio.destination);
+    o.start();
+    setTimeout(() => { try { o.stop() } catch(_){} }, ms);
+  } catch(_){}
+}
+
+function alarm(stark){
+  if (!S.ton) return;
+  try {
+    if (navigator.vibrate) navigator.vibrate(stark ? [180, 90, 180, 90, 300] : [120, 80, 160]);
+  } catch(_){}
+  ton(880, 160);
+  setTimeout(() => ton(660, 200), stark ? 220 : 180);
+}
+
+/* ═══════ GPS ═══════ */
+
+const TEMPO_DECKEL = 45;
+
+function gpsFehler(e){
+  const code = e && e.code;
+  if (code === 1){
+    S.gpsVersuche++;
+    S.gpsAus = true;
+    gpsStopp();
+    if (S.cockpit) ckstat("Ortung verweigert · im Browser erlauben", "e");
+    log("Ortung verweigert · Tempo bleibt aus", "e");
+    fahrtMalen();
+    return;
+  }
+  if (S.cockpit) ckstat(code === 3 ? "kein Signal" : "Ortung hakt", "e");
+}
+
+function tempoSetzen(kmh){
+  const alt = S.trip.kmh;
+  if (kmh > 0.7){
+    const gedeckelt = Math.min(kmh, TEMPO_DECKEL);
+    S.trip.kmh = alt ? alt + (gedeckelt - alt) * 0.35 : gedeckelt;
+    if (S.trip.kmh > S.trip.max) S.trip.max = S.trip.kmh;
+  } else {
+    S.trip.kmh = alt * 0.5;
+    if (S.trip.kmh < 0.5) S.trip.kmh = 0;
+  }
+}
+
+function gpsNeu(p){
+  const c = p.coords;
+  if (!c) return;
+  const jetzt = Date.now();
+
+  if (c.accuracy > 150) return;
+
+  if (S.trip.pos && c.accuracy < 40){
+    const d = distanz(S.trip.pos.lat, S.trip.pos.lng, c.latitude, c.longitude);
+    if (d > 2 && d < 250) S.trip.dist += d;
+  }
+
+  let v = null;
+  if (typeof c.speed === "number" && isFinite(c.speed) && c.speed >= 0) v = c.speed;
+  if (v === null && S.trip.pos){
+    const dt = (jetzt - S.trip.pos.t) / 1000;
+    if (dt > 0.5 && dt < 10){
+      const d = distanz(S.trip.pos.lat, S.trip.pos.lng, c.latitude, c.longitude);
+      if (d < 120) v = d / dt;
+    }
+  }
+
+  if (v !== null){
+    S.trip.fix = jetzt;
+    tempoSetzen(v * 3.6);
+  }
+
+  S.trip.pos = { lat:c.latitude, lng:c.longitude, t:jetzt };
+  if (S.cockpit) ckstat("Ortung · ±" + Math.round(c.accuracy) + " m", "g");
+  fahrtMalen();
+}
+
+function gpsStart(){
+  if (!navigator.geolocation || S.gps !== null) return;
+  S.trip.pos = null;
+  S.trip.kmh = 0;
+  S.trip.fix = Date.now();
+  try {
+    S.gps = navigator.geolocation.watchPosition(gpsNeu, gpsFehler,
+      { enableHighAccuracy:true, maximumAge:1000, timeout:25000 });
+  } catch(_){ S.gps = null }
+}
+
+function gpsStopp(){
+  if (S.gps !== null && navigator.geolocation){
+    try { navigator.geolocation.clearWatch(S.gps) } catch(_){}
+  }
+  S.gps = null;
+  S.trip.kmh = 0;
+  S.trip.pos = null;
+}
+
+/* ═══════ WACHLOCK ═══════ */
+
+async function wachAn(){
+  if (!("wakeLock" in navigator)) return false;
+  if (S.wake) return true;
+  try {
+    S.wake = await navigator.wakeLock.request("screen");
+    S.wake.addEventListener("release", () => { S.wake = null });
+    return true;
+  } catch(_){ S.wake = null; return false }
+}
+
+async function wachAus(){
+  if (!S.wake) return;
+  try { await S.wake.release() } catch(_){}
+  S.wake = null;
+}
+
+/* ═══════ COCKPIT ═══════ */
+
+function ckTick(){
+  clearInterval(S.ckTimer);
+  S.ckTimer = setInterval(() => {
+    if (!S.cockpit){ clearInterval(S.ckTimer); S.ckTimer = 0; return }
+    if (!S.fahrt.laufend) cockpitMalen();
+  }, 2000);
+}
+
+async function cockpitAuf(){
+  S.cockpit = true;
+  document.body.classList.add("ck");
+  $("cockpit").classList.add("an");
+  if (S.gpsAus && S.gpsVersuche < 4){
+    S.gpsAus = false;
+    gpsStart();
+  }
+  const ok = await wachAn();
+  ckstat(S.fahrt.laufend
+    ? (ok ? "Bildschirm bleibt an" : "Wachhalten nicht verfügbar")
+    : "keine Fahrt · unten entsperren", S.fahrt.laufend && !ok ? "e" : "");
+  cockpitMalen();
+  ckTick();
+}
+
+async function cockpitZu(){
+  S.cockpit = false;
+  clearInterval(S.ckTimer);
+  S.ckTimer = 0;
+  document.body.classList.remove("ck");
+  $("cockpit").classList.remove("an");
+  await wachAus();
+}
+
+function cockpitMalen(){
+  const b = belastung();
+  const rest = Math.max(0, S.grenze - b);
+  const kmh = Math.round(S.trip.kmh);
+  const akku = S.akku;
+
+  $("ckKmh").textContent = String(kmh);
+  $("ckTempo").classList.toggle("roll", kmh > 1);
+  $("ckZeit").textContent = uhr(sekunden());
+  $("ckEur").textContent = euro(b);
+  $("ckRest").textContent = euro(rest);
+  $("ckDist").textContent = kmText(S.trip.dist);
+  $("ckBrand").textContent = V[S.brand].name;
+  $("ckConn").textContent = (S.dev && S.dev.gatt && S.dev.gatt.connected) ? "VERBUNDEN" : "GETRENNT";
+  $("ckUn").disabled = S.fahrt.laufend;
+
+  if (akku === null || akku === undefined){
+    $("ckBatLab").textContent = "–";
+    $("ckAkku").style.width = "0%";
+    $("ckAkku").className = "";
+  } else {
+    $("ckBatLab").textContent = akku + " %";
+    $("ckAkku").style.width = Math.max(0, Math.min(100, akku)) + "%";
+    $("ckAkku").className = akku <= 15 ? "voll" : akku <= 30 ? "warn" : "";
+  }
+}
+
+/* ═══════ ANZEIGE FAHRT ═══════ */
+
+function fahrtMalen(){
+  const b = belastung();
+  const rest = Math.max(0, S.grenze - b);
+  const k = S.karten[S.brand];
+
+  $("uLast").textContent = euro(b);
+  $("uLimit").textContent = euro(S.grenze);
+  $("cLimit").textContent = euro(rest);
+  $("uZeit").textContent = uhr(sekunden());
+  $("uZeit").className = S.fahrt.laufend ? "zeit on" : "zeit";
+
+  const anteil = Math.min(100, Math.round(b / S.grenze * 100));
+  const leiste = $("cBar");
+  leiste.style.width = anteil + "%";
+  leiste.className = anteil >= 100 ? "voll" : anteil >= 75 ? "warn" : "";
+
+  if (k) $("cardBox").classList.toggle("voll", b >= S.grenze);
+  else $("cardBox").classList.remove("voll");
+
+  $("fahrtBox").style.display = S.fahrt.laufend ? "block" : "none";
+  if (!S.fahrt.laufend) return;
+
+  if (Date.now() - S.trip.fix > 2500 && S.trip.kmh > 0){
+    S.trip.kmh *= 0.55;
+    if (S.trip.kmh < 0.5) S.trip.kmh = 0;
+  }
+
+  const kmh = Math.round(S.trip.kmh);
+  $("fKmh").textContent = String(kmh);
+  $("tempo").classList.toggle("roll", kmh > 1);
+
+  const min = S.minute > 0 ? Math.floor(rest / S.minute) : 0;
+  $("fRest").textContent = S.minute > 0 ? (min > 0 ? min + " min" : "Grenze") : "–";
+
+  const uebrig = S.autolock > 0 ? Math.max(0, S.autolock * 60 - sekunden()) : -1;
+  $("fAuto").textContent = S.autolock > 0
+    ? (uebrig > 0 ? "in " + uhr(uebrig) : "jetzt")
+    : "aus";
+
+  if (S.cockpit) cockpitMalen();
+
+  if (!S.trip.a75 && anteil >= 75 && anteil < 100){
+    S.trip.a75 = true;
+    alarm(false);
+    log("75 % der Grenze erreicht", "y");
+  }
+  if (!S.trip.a100 && anteil >= 100){
+    S.trip.a100 = true;
+    alarm(true);
+    log("Grenze erreicht", "e");
+  }
+  if (S.autolock > 0 && !S.autoGelaufen && uebrig === 0){
+    S.autoGelaufen = true;
+    alarm(true);
+    log("Auto-Sperre greift", "y");
+    stat("Auto-Sperre · wird gesperrt", "warn");
+    befehl("lk")
+      .then(r => { fahrtStoppen(); stat(r.ok ? "auto-geparkt" : "auto gesperrt ohne Antwort", "warn") })
+      .catch(() => { fahrtStoppen(); stat("auto-geparkt (ohne Funk)", "warn") });
+  }
+}
+
+/* ═══════ FAHRT ═══════ */
+
+function buchMalen(){
+  const b = S.buch;
+  $("buch").textContent = b.length
+    ? b.slice(-40).reverse().map(e =>
+        new Date(e.t).toLocaleString("de-DE") + " · " + String(e.marke).toUpperCase() +
+        " · " + uhr(Math.round(e.dauer)) + " · " + kmText(e.dist) + " · " + euro(e.preis) +
+        (e.code ? " · " + e.code : "")).join("\n")
+    : "noch keine Fahrten";
+
+  const n = b.length;
+  const m = b.reduce((a, e) => a + (e.dist || 0), 0);
+  const c = b.reduce((a, e) => a + (e.preis || 0), 0);
+  const d = b.reduce((a, e) => a + (e.dauer || 0), 0);
+  $("stN").textContent = String(n);
+  $("stKm").textContent = kmText(m);
+  $("stEur").textContent = euro(c);
+  $("stSchnitt").textContent = n
+    ? uhr(Math.round(d / n)) + " · " + euro(c / n)
+    : "–";
+}
+
+function buchNeu(){
+  const dauer = sekunden();
+  if (dauer < 30 && S.trip.dist < 50) return;
+  const preis = belastung();
+  S.buch.push({
+    t: Date.now(), marke: S.brand, dauer: dauer,
+    dist: Math.round(S.trip.dist), preis: preis, code: S.code || ""
+  });
+  if (S.buch.length > 200) S.buch = S.buch.slice(-200);
+  ls("buch", S.buch);
+  buchMalen();
+  log("Fahrt gebucht · " + uhr(dauer) + " · " + kmText(S.trip.dist) + " · " + euro(preis), "g");
+}
+
+function zusammenZeigen(dauer, dist, preis){
+  S.letzteZus = uhr(dauer) + " · " + kmText(dist) + " · " + euro(preis);
+  $("zusammen").textContent = "";
+  const b = document.createElement("b");
+  b.textContent = "Beendet.";
+  $("zusammen").appendChild(b);
+  $("zusammen").appendChild(document.createTextNode(" " + S.letzteZus));
+  if (S.letzteWo){
+    $("zusammen").appendChild(document.createElement("br"));
+    const a = document.createElement("a");
+    a.href = "geo:0,0?q=" + S.letzteWo.lat + "," + S.letzteWo.lng + "(Roller)";
+    a.textContent = "Standort gespeichert · in Karten-App öffnen";
+    $("zusammen").appendChild(a);
+  }
+  $("zusBox").style.display = "block";
+  $("bWo").disabled = !S.letzteWo;
+}
+
+function fahrtStarten(){
+  if (S.fahrt.laufend) return;
+  if (belastung() >= S.grenze) S.erneuert = false;
+  S.fahrt.start = Date.now();
+  S.fahrt.laufend = true;
+  S.autoGelaufen = false;
+  S.akkuWarn = false;
+  S.rideId = "";
+  S.akkuT = Date.now();
+  S.gpsAus = false;
+  S.trip = { dist:0, max:0, kmh:0, fix:Date.now(), pos:null, a75:false, a100:false };
+  gpsStart();
+  clearInterval(S.fahrt.timer);
+  S.fahrt.timer = setInterval(() => {
+    if (!S.fahrt.laufend) return;
+    if (belastung() >= S.grenze && !S.erneuert && !S.prov){
+      S.erneuert = true;
+      log("Grenze erreicht – neues Konto wird aufgesetzt.", "y");
+      stat("Grenze erreicht – neues Konto.", "warn");
+      erneuern().catch(e => {
+        S.erneuert = false;
+        log("Erneuern: " + kurz(e), "e");
+      });
+    }
+    if (okaiWeg() && S.best && S.dev && S.dev.gatt.connected &&
+        !S.befehlLauf && Date.now() - S.akkuT > 90000){
+      S.akkuT = Date.now();
+      okaiAkku().catch(() => {});
+    }
+    fahrtMalen();
+  }, 1000);
+  fahrtMalen();
+  if (S.cockpit) ckstat("Bildschirm bleibt an", "g");
+}
+
+function fahrtStoppen(){
+  if (!S.fahrt.laufend) return;
+  const dauer = sekunden();
+  const dist = Math.round(S.trip.dist);
+  const preis = belastung();
+  if (S.trip.pos && S.trip.pos.lat) S.letzteWo = { lat:S.trip.pos.lat, lng:S.trip.pos.lng };
+  buchNeu();
+  const k = S.karten[S.brand];
+  if (k) k.last = preis;
+  S.fahrt.start = 0;
+  S.fahrt.laufend = false;
+  S.rideId = "";
+  clearInterval(S.fahrt.timer);
+  S.fahrt.timer = 0;
+  gpsStopp();
+  zusammenZeigen(dauer, dist, preis);
+  speichern();
+  fahrtMalen();
+  if (S.cockpit) ckstat("Fahrt beendet · " + S.letzteZus, "");
+}
+
+function karteMalen(){
+  const k = S.karten[S.brand];
+  $("cNum").textContent = k ? k.num.replace(/(\d{4})(?=\d)/g, "$1 ") : "•••• •••• •••• ••••";
+  $("cExp").textContent = k ? k.exp : "--/--";
+  $("cCvv").textContent = k ? k.cvv : "---";
+  $("cBrand").textContent = k ? k.brand : "LEER";
+  $("cardBox").classList.toggle("off", !k || !k.ok);
+  fahrtMalen();
+}
+
+async function tokenisieren(k){
+  const pk = await keySichern();
+  const f = new URLSearchParams();
+  f.set("key", pk);
+  f.set("card[number]", k.num);
+  f.set("card[exp_month]", k.exp.split("/")[0]);
+  f.set("card[exp_year]", "20" + k.exp.split("/")[1]);
+  f.set("card[cvc]", k.cvv);
+  f.set("card[name]", k.held);
+  const res = await fetch("https://api.stripe.com/v1/tokens", {
+    method:"POST", body:f,
+    headers:{ "Content-Type":"application/x-www-form-urlencoded" }
+  });
+  const j = await res.json().catch(() => null);
+  if (!j) throw new Error("Stripe unlesbar");
+  if (j.error){
+    const c = j.error.code || j.error.decline_code || "";
+    if (/api key|api_key/i.test(c + " " + (j.error.message || ""))){
+      S.keyOk = "";
+      throw new Error("Schlüssel abgelehnt");
+    }
+    if (c === "incorrect_number") throw new Error("Nummer falsch");
+    if (c === "expired_card") throw new Error("abgelaufen");
+    throw new Error(c || j.error.message || "Stripe-Fehler");
+  }
+  if (!j.id) throw new Error("kein Token");
+  return j.id;
+}
+
+async function pruefen(){
+  const k = S.karten[S.brand];
+  if (!k) throw new Error("keine Karte");
+  cstat("prüfe " + k.num.slice(0, 6) + " …", "");
+  k.tok = await tokenisieren(k);
+  k.ok = true;
+  speichern();
+  karteMalen();
+  cstat("Karte bestätigt · " + k.num.slice(0, 6), "g");
+}
+
+async function suchen(){
+  const liste = BIN.visa.concat(BIN.master).sort(() => Math.random() - 0.5);
+  for (let i = 0; i < liste.length; i++){
+    const k = karteBauen(liste[i]);
+    cstat("Versuch " + (i + 1) + "/" + liste.length + " · " + liste[i], "");
+    try {
+      k.tok = await tokenisieren(k);
+      k.ok = true;
+      S.karten[S.brand] = k;
+      speichern();
+      karteMalen();
+      cstat("Treffer · " + liste[i], "g");
+      return;
+    } catch(e){
+      log("BIN " + liste[i] + ": " + kurz(e), "y");
+    }
+    await sleep(300);
+  }
+  cstat("keine BIN hat getragen", "e");
+  throw new Error("BIN-Suche erfolglos");
+}
+
+/* ═══════ KONTO ═══════ */
+
+const acct = () => S.acct[S.brand];
+function setAcct(a){ S.acct[S.brand] = a; speichern() }
+
+function voiNummer(t){
+  let n = String(t).replace(/[^\d+]/g, "");
+  if (n.indexOf("+49") === 0) n = n.slice(3);
+  else if (n.indexOf("0049") === 0) n = n.slice(4);
+  else if (n.charAt(0) === "0") n = n.slice(1);
+  return n;
+}
+
+async function boltIntl(tel){
+  const u = "https://user.bolt.eu/user/getMobileNumberInInternationalFormat?phone=" +
+    encodeURIComponent(tel) + "&version=CI.23.0&deviceId=" + encodeURIComponent(DEV) +
+    "&deviceType=iphone&language=de";
+  try {
+    const r = await roh(u, { headers:H() });
+    const v = r.json && r.json.data && r.json.data.phone_number_in_international_format;
+    if (v) return v;
+  } catch(_){}
+  const d = String(tel).replace(/[^\d+]/g, "");
+  return d.charAt(0) === "+" ? d : "+49" + d.replace(/^0/, "");
+}
+
+async function kontoTelefon(){
+  const tel = $("iPhone").value.trim();
+  if (tel.replace(/\D/g, "").length < 7) throw new Error("Handynummer fehlt");
+  if (S.brand === "lime") throw new Error("Lime läuft über die Mail, nicht über die Nummer");
+  if (S.brand === "dott") throw new Error("Dott läuft rein über Bluetooth");
+
+  if (S.brand === "voi"){
+    const r = await roh(V.voi.base + "/auth/verify/phone",
+      { method:"POST", headers:H(), body:J({ country_code:"DE", phone_number:voiNummer(tel) }) });
+    if (r.status >= 400) throw new Error("Voi " + r.status + " · " + saub(r.text));
+    const tok = r.json && r.json.token;
+    if (!tok) throw new Error("Voi ohne Zwischentoken · " + saub(r.text));
+    setAcct({ ph:tel, vt:tok, t:"", bal:0 });
+    paint();
+    stat("Code ist unterwegs · dann CODE SENDEN drücken", "ok");
+    return;
+  }
+
+  const intl = await boltIntl(tel);
+  const uuid = crypto.randomUUID ? crypto.randomUUID() : rnd(8) + "-" + rnd(4);
+  const koerper = J({ phone:intl, phone_uuid:uuid, preferred_verification_method:"sms" });
+  const wege = [
+    V.bolt.base + "/user/user/v1/register/phone",
+    V.bolt.base + "/user/v1/register/phone",
+    "https://user.bolt.eu/user/register/phone"
+  ];
+  let letzte = "";
+  for (const u of wege){
+    const r = await roh(u, { method:"POST", headers:H(), body:koerper });
+    letzte = r.status + " · " + saub(r.text);
+    log("Bolt register · " + u.replace("https://", "") + " · " + r.status,
+      r.ok && r.json && r.json.code === 0 ? "g" : "y");
+    if (r.json && r.json.code === 0){
+      setAcct({ ph:intl, pu:uuid, t:"", bal:0 });
+      paint();
+      stat("SMS ist unterwegs · dann Code eingeben und PRÜFEN", "ok");
+      return;
+    }
+    if (r.status !== 404) break;
+  }
+  throw new Error("Bolt " + letzte);
+}
+
+async function kontoPruefen(){
+  const a = acct();
+  if (!a) throw new Error("kein Konto");
+
+  if (S.brand === "lime"){
+    if (!a.t && $("iOtp").value.trim()){
+      a.t = await limeLogin($("iOtp").value.trim());
+      setAcct(a);
+    }
+    if (!a.t) throw new Error("Konto ist noch nicht angemeldet");
+    const bal = await limeWallets(a.t);
+    if (bal === null){ stat("Token trägt nicht.", "e"); return }
+    a.bal = bal;
+    setAcct(a);
+    const sperreText = await limeBlock(a.t);
+    paint();
+    stat(sperreText ? "Konto bestätigt · " + sperreText : "Konto bestätigt.",
+      sperreText ? "warn" : "ok");
+    return;
+  }
+
+  const code = $("iOtp").value.trim();
+  if (!code) throw new Error("Code fehlt");
+
+  if (S.brand === "voi"){
+    const r = await roh(V.voi.base + "/auth/verify/code",
+      { method:"POST", headers:H(), body:J({ code:code, token:a.vt }) });
+    const j = r.json || {};
+    let at = j.authToken;
+    if (!at && j.verificationStep === "emailValidationRequired"){
+      const e = await roh(V.voi.base + "/auth/verify/presence",
+        { method:"POST", headers:H(), body:J({ email:(a.e || ""), token:a.vt }) });
+      at = e.json && e.json.authToken;
+    }
+    if (!at && j.verificationStep === "deviceActivationRequired"){
+      const e = await roh("https://api.voiapp.io/v3/auth/verify/device/activate",
+        { method:"POST", headers:H(), body:J({ token:a.vt, provider:"sms" }) });
+      at = e.json && e.json.authToken;
+    }
+    if (!at){ stat("Code falsch (" + r.status + ") · " + saub(r.text), "e"); return }
+    a.at = at;
+    const s = await roh(V.voi.base + "/auth/session",
+      { method:"POST", headers:H(), body:J({ authenticationToken:at }) });
+    a.t = s.json && s.json.accessToken;
+    a.at = (s.json && s.json.authenticationToken) || at;
+    setAcct(a);
+    paint();
+    stat("Konto bestätigt.", "ok");
+    return;
+  }
+
+  const koerper = J({ phone:a.ph, phone_uuid:a.pu,
+    verification:{ confirmation_data:{ code:code } } });
+  const wege = [
+    V.bolt.base + "/user/user/v1/confirmVerification",
+    V.bolt.base + "/user/confirmVerification"
+  ];
+  for (const u of wege){
+    const r = await roh(u, { method:"POST", headers:H(), body:koerper });
+    if (r.json && r.json.code === 0){
+      const t = (r.json.data && r.json.data.token) ||
+        "Basic " + btoa(a.ph + ":" + (a.pu || DEV));
+      a.t = t;
+      setAcct(a);
+      paint();
+      stat("Konto bestätigt.", "ok");
+      return;
+    }
+    log("Bolt confirm · " + r.status + " · " + saub(r.text), "y");
+    if (r.status !== 404) break;
+  }
+  stat("Code falsch oder Route tot", "e");
+}
+
+async function kontoLoeschen(){
+  const a = acct();
+  try {
+    if (a && a.t){
+      if (S.brand === "lime") await roh(V.lime.base + "/v1/users/me", { method:"DELETE", headers:H(a.t) });
+      if (S.brand === "voi") await roh(V.voi.base + "/users/me", { method:"DELETE", headers:H(a.t) });
+      if (S.brand === "bolt") await roh("https://node.bolt.eu/user/user/v1/delete", { method:"POST", headers:H(a.t), body:"{}" });
+    }
+  } catch(e){ log("Löschen: " + kurz(e), "y") }
+  S.acct[S.brand] = null;
+  await fachWeg();
+  speichern();
+  paint();
+}
+
+async function vorbereiten(){
+  if (S.brand !== "lime") throw new Error("Automatik nur für Lime");
+  if (!S.relay) log("kein Relay gesetzt · Sitzung fehlt, Login bleibt bei 422", "y");
+
+  let a = acct();
+  if (!a || !a.t){
+    await limeSitzung();
+
+    let fach = null;
+    for (let runde = 1; runde <= 3 && !(a && a.t); runde++){
+      if (runde > 1){
+        await fachWeg();
+        log("Postfach wird ersetzt. (" + runde + "/3)", "y");
+      }
+      if (!S.ck) await limeSitzung();
+      try {
+        fach = await fachHolen();
+        stat("Mail wird angefordert … (" + runde + "/3)", "warn");
+        await limeMail(fach.adr);
+        stat("warte auf die Mail …", "warn");
+      } catch(e){
+        log("Runde " + runde + ": " + kurz(e), "y");
+        continue;
+      }
+
+      const probiert = [];
+      let weiter = false;
+      for (let i = 0; i < 24 && !weiter; i++){
+        let t = "";
+        try { t = await fach.lesen() } catch(_){}
+        const kand = t ? tokenAus(t).filter(x => probiert.indexOf(x) < 0) : [];
+        for (const tok of kand){
+          probiert.push(tok);
+          stat("melde an …", "warn");
+          try {
+            a = { e:fach.adr, t:await limeLogin(tok), bal:0 };
+            setAcct(a);
+            log("Anmeldung steht · " + tok.slice(0, 10) + "…", "g");
+            weiter = true;
+            break;
+          } catch(e){
+            log("Token " + tok.slice(0, 8) + "… · " + kurz(e), "y");
+          }
+        }
+        if (!weiter) await sleep(2000);
+      }
+      if (!(a && a.t)) log("Runde " + runde + ": kein brauchbarer Link.", "y");
+    }
+    if (!a || !a.t) throw new Error("kein Link in der Mail");
+  }
+
+  let k = S.karten.lime;
+  if (!k || !k.ok){
+    stat("Schlüssel wird gesucht …", "warn");
+    await keySichern();
+    stat("Karte wird geprüft …", "warn");
+    k = karteBauen();
+    S.karten.lime = k;
+    await pruefen();
+  }
+
+  if (!k.hinterlegt){
+    stat("Karte wird hinterlegt …", "warn");
+    await limeCard(a.t, k.tok);
+    k.hinterlegt = true;
+    speichern();
+  }
+
+  cstat("Konto und Karte fertig.", "g");
+  stat("fertig · jetzt ENTSPERREN", "ok");
+}
+
+async function starten(){
+  if (S.prov) throw new Error("läuft schon");
+  S.prov = true;
+  paint();
+  try {
+    await vorbereiten();
+    if (S.best && S.dev && S.dev.gatt.connected){
+      stat("Konto fertig · entsperre", "warn");
+      const r = await befehl("un");
+      stat(r.ok ? "entsperrt" : "Befehle raus · keine Antwort", r.ok ? "ok" : "warn");
+    }
+  } finally { S.prov = false; paint() }
+}
+
+async function erneuern(){
+  if (S.prov) throw new Error("läuft schon");
+  S.prov = true;
+  paint();
+  try {
+    stat("altes Konto wird entfernt …", "warn");
+    await kontoLoeschen();
+    devNeu();
+    S.ck = ""; ls("ck", "");
+    S.karten[S.brand] = karteBauen();
+    S.erneuert = false;
+    if (S.fahrt.laufend) S.fahrt.start = Date.now();
+    speichern();
+    karteMalen();
+    await vorbereiten();
+    stat("neu aufgesetzt · Roller läuft weiter", "ok");
+  } finally { S.prov = false; paint() }
+}
+
+/* ═══════ BLUETOOTH ═══════ */
+
+const OKAI_SVC = "00002c00-0000-1000-8000-00805f9b34fb";
+const OKAI_PW = "OKAIYLBT";
+const OKAI_SVC_PW = "OKAI_CAR";
+const OKAI_ADV = ["669a0c20-0008-a7ba-e311-0685c0f7978a", "258eafa5-e914-47da-95ca-c5ab0dc85b11"];
+
+const UU = [
+  OKAI_SVC, OKAI_ADV[0], OKAI_ADV[1],
+  "6e400001-b5a3-f393-e0a9-e50e24dcca9e",
+  "0000ffe0-0000-1000-8000-00805f9b34fb",
+  "0000ffe5-0000-1000-8000-00805f9b34fb",
+  "0000ffe9-0000-1000-8000-00805f9b34fb",
+  "0000fff0-0000-1000-8000-00805f9b34fb",
+  "0000ff00-0000-1000-8000-00805f9b34fb",
+  "0000ffb0-0000-1000-8000-00805f9b34fb",
+  "0000ffd0-0000-1000-8000-00805f9b34fb",
+  "0000fee7-0000-1000-8000-00805f9b34fb",
+  "0000fee9-0000-1000-8000-00805f9b34fb",
+  "0000fe95-0000-1000-8000-00805f9b34fb",
+  "49535343-fe7d-4ae5-8fa9-9fafd205e455"
+];
+
+const enc = s => new TextEncoder().encode(s);
+const bu = a => new Uint8Array(a).buffer;
+
+function crc16(a){
+  let c = 0;
+  for (const b of a){
+    c ^= b << 8;
+    for (let i = 0; i < 8; i++)
+      c = (c & 0x8000) ? ((c << 1) ^ 0x1021) & 0xFFFF : (c << 1) & 0xFFFF;
+  }
+  return c;
+}
+
+function rahmenB(cmd, pay){
+  const p = pay || [];
+  const f = new Uint8Array(8 + p.length);
+  f[0] = 0x46; f[1] = 0x43;
+  f[2] = (cmd >> 8) & 0xFF; f[3] = cmd & 0xFF;
+  f[4] = (p.length >> 8) & 0xFF; f[5] = p.length & 0xFF;
+  f.set(p, 6);
+  const c = crc16(f.subarray(0, 6 + p.length));
+  f[6 + p.length] = (c >> 8) & 0xFF;
+  f[7 + p.length] = c & 0xFF;
+  return f.buffer;
+}
+
+const HERTZ = rahmenB(0x1101, [...enc("LIMEBIKE")]);
+const AN = rahmenB(0x1661, [0xF1]);
+const AUS = rahmenB(0x1661, [0xF0]);
+const BLINK = rahmenB(0x1613, [0x06]);
+const LICHT_AN = rahmenB(0x1612, [0xF1]);
+const LICHT_AUS = rahmenB(0x1612, [0xF0]);
+
+function okaiRahmen(op, felder){
+  S.okseq = ((S.okseq || 0) + 1) & 0xFFFF;
+  const s = S.okseq.toString(16).toUpperCase().padStart(4, "0");
+  const f = (felder || []).join(",");
+  return "AT+" + op + "=" + (f ? f + "," : "") + s + "$\r\n";
+}
+
+function atBau(typ, daten, pw){
+  const t = Math.floor(Date.now() / 1000);
+  S.seq = (S.seq + 1) & 0xFFFF;
+  return "AT+" + typ + "," + (pw || "00000000") + "," + t + "," + S.seq +
+    "," + (daten || "") + "$";
+}
+
+const AT_UN = ['{"unlock":1}', '{"cmd":"unlock"}'];
+const AT_LK = ['{"lock":1}', '{"cmd":"lock"}'];
+
+const okaiModus = () => !!(S.best && String(S.best.svc).indexOf("2c00") >= 0);
+const okaiWeg = () => !!(V[S.brand] && V[S.brand].okai) || okaiModus();
+
+function pwKandidaten(){
+  const l = [];
+  if (S.pwU) l.push(S.pwU);
+  const imei = (S.imei || "").replace(/\D/g, "");
+  if (imei.length >= 14){
+    try {
+      const p = DES.passwort(imei);
+      l.push(p, p.slice(0, 8));
+    } catch(_){}
+  }
+  const n = (S.pw || "").toUpperCase();
+  if (n){
+    l.push(n);
+    if (n.length >= 8) l.push(n.slice(0, 8));
+  }
+  l.push("00000000");
+  return [...new Set(l.filter(Boolean))];
+}
+
+function akkuPruefen(n){
+  if (n === null || n === undefined) return;
+  if (n <= 15 && !S.akkuWarn){
+    S.akkuWarn = true;
+    alarm(true);
+    log("Akku schwach · " + n + " %", "e");
+  }
+  if (n > 20) S.akkuWarn = false;
+}
+
+function statusAus(f){
+  S.akku = f[19];
+  S.offen = f[23] === 0xF1;
+  S.antworten++;
+  log("Status · Akku " + f[19] + " % · " + (S.offen ? "offen" : "gesperrt"), "g");
+  akkuPruefen(f[19]);
+  if (S.offen){
+    stat("entsperrt · Akku " + f[19] + " %", "ok");
+    if (!S.fahrt.laufend) fahrtStarten();
+  } else {
+    stat("gesperrt · Akku " + f[19] + " %", "warn");
+  }
+  if (S.cockpit) cockpitMalen();
+}
+
+function okaiAntwort(op, rohFelder){
+  S.antworten++;
+  const felder = String(rohFelder || "").split(",").map(x => x.trim()).filter(Boolean);
+  if (felder.length && /^[0-9A-Fa-f]{4}$/.test(felder[felder.length - 1])) felder.pop();
+  log("← " + op + (felder.length ? " · " + felder.join(" ") : ""), "g");
+
+  if (op === "OKSCM"){
+    const v = felder.filter(x => /^[01]$/.test(x)).pop();
+    if (v !== undefined){
+      const zu = (v === "1") !== S.okaiTausch;
+      S.offen = !zu;
+      if (S.offen){
+        stat("entsperrt", "ok");
+        if (!S.fahrt.laufend) fahrtStarten();
+      } else {
+        stat("gesperrt", "warn");
+      }
+    }
+  }
+  if (op === "OKBCL"){
+    const n = felder.map(Number).filter(x => isFinite(x) && x >= 0 && x <= 100)[0];
+    if (n !== undefined){
+      S.akku = n;
+      akkuPruefen(n);
+      stat("Akku " + n + " %", "ok");
+    }
+  }
+  if (op === "OKSCT"){
+    const v = felder.filter(x => /^[01]$/.test(x)).pop();
+    if (v !== undefined) log("Betrieb " + (v === "1" ? "an" : "aus"), "h");
+  }
+  if (S.cockpit) cockpitMalen();
+}
+
+function note(ev){
+  const dv = ev.target.value;
+  const b = new Uint8Array(dv.buffer, dv.byteOffset, dv.byteLength);
+
+  for (const x of b) S.puffer.push(x);
+  if (S.puffer.length > 300) S.puffer = S.puffer.slice(-300);
+
+  for (let i = 0; i + 42 <= S.puffer.length; i++){
+    if (S.puffer[i] !== 0x46 || S.puffer[i + 1] !== 0x43) continue;
+    const f = S.puffer.slice(i, i + 42);
+    if (crc16(f.slice(0, 40)) === ((f[40] << 8) | f[41])){
+      S.puffer = S.puffer.slice(i + 42);
+      statusAus(f);
+      return;
+    }
+  }
+
+  const t = String.fromCharCode.apply(null, b).replace(/[^\x20-\x7e\r\n]/g, "");
+  if (!t) return;
+  S.txt = (S.txt + t).slice(-800);
+
+  const re = /AT\+([A-Z0-9]{2,6})=([^$]*)\$/g;
+  let m, letzte = 0;
+  while ((m = re.exec(S.txt))){ okaiAntwort(m[1], m[2]); letzte = re.lastIndex }
+  if (letzte) S.txt = S.txt.slice(letzte);
+  else if (S.txt.length > 400) S.txt = S.txt.slice(-200);
+
+  if (!/AT\+/.test(t) && !letzte) log("← " + t.trim().slice(0, 60), "h");
+}
+
+function rang(c, gemerkt){
+  let r = 0;
+  const k8 = String(c.wr).slice(4, 8);
+  const svc8 = String(c.svc).slice(4, 8);
+  if (svc8 === "2c00") r += 14;
+  if (/^[0-9a-f]{2}35$/.test(k8)) r += 9;
+  if (/^[0-9a-f]{3}1$/.test(k8)) r += 5;
+  if (c.notify) r += 4;
+  if (c.char.properties.write) r += 2;
+  if (c.wr === gemerkt) r += 6;
+  return r;
+}
+
+async function kanaleSuchen(srv, gemerkt){
+  let dienste = [];
+  try { dienste = await srv.getPrimaryServices() } catch(_){}
+  if (!dienste.length){
+    for (const u of UU){ try { dienste.push(await srv.getPrimaryService(u)) } catch(_){} }
+  }
+  const liste = [];
+  for (const ds of dienste){
+    let ks = [];
+    try { ks = await ds.getCharacteristics() } catch(_){ continue }
+    for (const k of ks){
+      if (!k.properties.write && !k.properties.writeWithoutResponse) continue;
+      const ch = { svc:ds.uuid, wr:k.uuid, char:k };
+      try {
+        if (k.properties.notify || k.properties.indicate){
+          await k.startNotifications();
+          k.addEventListener("characteristicvaluechanged", note);
+          ch.notify = true;
+        }
+      } catch(_){}
+      liste.push(ch);
+    }
+  }
+  liste.sort((a, b) => rang(b, gemerkt) - rang(a, gemerkt));
+  return liste;
+}
+
+async function nachziehen(d){
+  const gemerkt = lg("best_" + S.brand, "");
+  for (let i = 0; i < 3; i++){
+    await sleep(1200 + i * 900);
+    if (d.gatt.connected) return true;
+    try {
+      const srv = await d.gatt.connect();
+      const liste = await kanaleSuchen(srv, gemerkt);
+      if (!liste.length) continue;
+      S.srv = srv;
+      S.chans = liste;
+      S.best = liste[0];
+      S.puffer = []; S.txt = "";
+      $("bt").textContent = "verbunden · " + (d.name || "Gerät");
+      $("bt").classList.add("on");
+      stat("neu verbunden · " + String(S.best.wr).slice(4, 8), "ok");
+      log("Verbindung wiederhergestellt", "g");
+      if (!okaiWeg()) startPing();
+      if (S.cockpit) cockpitMalen();
+      return true;
+    } catch(_){}
+  }
+  return false;
+}
+
+async function verbinden(){
+  if (S.verbinde) throw new Error("Verbindung läuft schon");
+  if (!navigator.bluetooth) throw new Error("kein Bluetooth in diesem Browser");
+  S.verbinde = true;
+  try {
+    stat("Gerät in der Liste wählen …", "warn");
+    let d;
+    try {
+      d = await navigator.bluetooth.requestDevice({ acceptAllDevices:true, optionalServices:UU });
+    } catch(e){
+      throw new Error(/cancel|No device/i.test(String(e && e.message)) ? "Auswahl abgebrochen" : kurz(e));
+    }
+
+    const m = (d.name || "").match(/lime-([0-9a-f]+)/i);
+    S.pw = m ? m[1].toUpperCase() : "";
+    log("Gerät: " + (d.name || "ohne Namen"), "g");
+
+    d.addEventListener("gattserverdisconnected", async () => {
+      log("Verbindung getrennt.", "e");
+      stopPing();
+      S.chans = []; S.srv = null; S.best = null;
+      S.offen = false; S.puffer = []; S.txt = "";
+      $("bt").textContent = "getrennt";
+      $("bt").classList.remove("on");
+      stat("getrennt · versuche neu", "warn");
+      if (S.cockpit) cockpitMalen();
+      if (S.fahrt.laufend) alarm(false);
+      const ok = await nachziehen(d);
+      if (!ok){
+        S.dev = null;
+        stat("getrennt · Verbindung weg", "e");
+        if (S.cockpit) ckstat("Verbindung weg · zurück und neu verbinden", "e");
+        if (S.fahrt.laufend) alarm(true);
+      }
+    });
+
+    stat("verbinde …", "warn");
+    let srv = null;
+    for (let i = 0; i < 5 && !srv; i++){
+      try { srv = await d.gatt.connect() } catch(_){ await sleep(1500) }
+    }
+    if (!srv) throw new Error("Kopplung kam nicht zustande · Code vom Display");
+
+    S.dev = d;
+    S.srv = srv;
+    S.chans = [];
+    S.antworten = 0;
+    S.puffer = [];
+    S.txt = "";
+
+    const gemerkt = lg("best_" + S.brand, "");
+    const liste = await kanaleSuchen(srv, gemerkt);
+    if (!liste.length) throw new Error("kein schreibbarer Kanal");
+    S.chans = liste;
+
+    const wahl = parseInt($("iKanal").value || "-1", 10);
+    S.best = (wahl >= 0 && S.chans[wahl]) ? S.chans[wahl] : S.chans[0];
+
+    const sel = $("iKanal");
+    sel.innerHTML = '<option value="">automatisch</option>';
+    S.chans.forEach((c, i) => {
+      const o = document.createElement("option");
+      o.value = String(i);
+      o.textContent = String(c.wr).slice(4, 8) + " / " + String(c.svc).slice(4, 8);
+      sel.appendChild(o);
+    });
+
+    log(S.chans.length + " Kanäle · aktiv " + String(S.best.wr).slice(4, 8) +
+      (okaiModus() ? " · OKAI" : ""), "g");
+    $("bt").textContent = "verbunden · " + (d.name || "Gerät");
+    $("bt").classList.add("on");
+    stat("verbunden · jetzt ENTSPERREN", "ok");
+
+    await sleep(okaiWeg() ? 800 : 3000);
+    if (!okaiWeg()) startPing();
+    if (S.cockpit) cockpitMalen();
+  } finally { S.verbinde = false }
+}
+
+async function sende(ch, a){
+  if (!ch) throw new Error("kein Kanal");
+  if (ch.char.properties.writeWithoutResponse && ch.char.writeValueWithoutResponse)
+    return ch.char.writeValueWithoutResponse(a);
+  return ch.char.writeValue(a);
+}
+
+function startPing(){
+  stopPing();
+  S.ping = setInterval(() => {
+    if (!S.best || !S.dev || !S.dev.gatt.connected) return;
+    if (okaiWeg()) return;
+    sende(S.best, HERTZ).catch(() => {});
+  }, 400);
+}
+function stopPing(){ clearInterval(S.ping); S.ping = 0 }
+
+async function anmelden(ch){
+  for (const pw of pwKandidaten()){
+    if (!S.dev || !S.dev.gatt.connected) return "";
+    S.antworten = 0;
+    try { await sende(ch, bu(enc(atBau("ATH", "", pw)))); S.gesamt++ } catch(_){}
+    await sleep(800);
+    if (S.antworten > 0){ log("angemeldet · " + pw, "g"); return pw }
+  }
+  return "";
+}
+
+async function einschalten(){
+  if (!S.best) throw new Error("nicht verbunden");
+  S.offen = false;
+  for (let i = 0; i < 3; i++){
+    await sende(S.best, AN).catch(() => {});
+    S.gesamt++;
+    await sleep(900);
+    if (S.offen) return true;
+    if (!S.dev || !S.dev.gatt.connected) return false;
+  }
+  return S.offen;
+}
+
+async function ausschalten(){
+  if (!S.best) throw new Error("nicht verbunden");
+  for (let i = 0; i < 2; i++){
+    await sende(S.best, AUS).catch(() => {});
+    await sleep(900);
+    if (!S.offen) break;
+  }
+  return !S.offen;
+}
+
+async function okaiPwd(){
+  if (!S.best) throw new Error("nicht verbunden");
+  S.antworten = 0;
+  try { await sende(S.best, bu(enc(okaiRahmen("OKPWD", [OKAI_PW])))); S.gesamt++ } catch(_){}
+  await sleep(700);
+  return S.antworten > 0;
+}
+
+async function okaiSchalten(an){
+  if (!S.best) throw new Error("nicht verbunden");
+  const tausch = !!S.okaiTausch;
+  const erst = an ? (tausch ? "1" : "0") : (tausch ? "0" : "1");
+  const dann = an ? (tausch ? "0" : "1") : (tausch ? "1" : "0");
+  for (const v of [erst, dann]){
+    S.antworten = 0;
+    try { await sende(S.best, bu(enc(okaiRahmen("OKSCM", [OKAI_PW, v])))); S.gesamt++ } catch(_){}
+    await sleep(1100);
+    if (S.antworten > 0){ S.okaiLetzt = v; return true }
+    if (!S.dev || !S.dev.gatt.connected) return false;
+  }
+  return false;
+}
+
+async function okaiTest(){
+  if (!S.best) throw new Error("nicht verbunden");
+  S.antworten = 0;
+  try { await sende(S.best, bu(enc(okaiRahmen("OKXWM", [OKAI_SVC_PW, "2"])))); S.gesamt++ } catch(_){}
+  await sleep(900);
+  return S.antworten > 0;
+}
+
+async function okaiAkku(){
+  if (!S.best) throw new Error("nicht verbunden");
+  S.antworten = 0;
+  try { await sende(S.best, bu(enc(okaiRahmen("OKBCL", [OKAI_PW])))); S.gesamt++ } catch(_){}
+  await sleep(1000);
+  return S.antworten > 0;
+}
+
+async function befehl(art){
+  if (S.befehlLauf) throw new Error("Befehl läuft schon");
+  S.befehlLauf = true;
+  S.gesamt = 0;
+  try {
+    for (let v = 1; v <= 2; v++){
+      try {
+        if (!S.dev || !S.dev.gatt.connected || !S.chans.length){
+          await verbinden();
+          await sleep(okaiWeg() ? 800 : 3000);
+        }
+      } catch(e){
+        if (v === 2) throw e;
+        continue;
+      }
+
+      if (okaiWeg()){
+        if (await okaiSchalten(art === "un")) return { gesendet:S.gesamt, ok:true };
+        await okaiPwd();
+        if (await okaiSchalten(art === "un")) return { gesendet:S.gesamt, ok:true };
+        await okaiTest();
+        if (await okaiSchalten(art === "un")) return { gesendet:S.gesamt, ok:true };
+      }
+
+      if (art === "un"){
+        if (await einschalten()) return { gesendet:S.gesamt, ok:true };
+      } else {
+        if (await ausschalten()) return { gesendet:S.gesamt, ok:true };
+      }
+
+      if (S.dev && S.dev.gatt.connected){
+        const pw = await anmelden(S.best);
+        if (pw){
+          S.antworten = 0;
+          for (const d of (art === "lk" ? AT_LK : AT_UN)){
+            try { await sende(S.best, bu(enc(atBau("CMD", d, pw)))); S.gesamt++ } catch(_){}
+            await sleep(800);
+            if (S.antworten > 0) return { gesendet:S.gesamt, ok:true };
+          }
+        }
+      }
+
+      for (const w of (art === "lk" ? ["lock","OFF","K0"] : ["unlock","ON","K1"])){
+        if (!S.dev || !S.dev.gatt.connected) break;
+        S.antworten = 0;
+        try { await sende(S.best, bu(enc(w))); S.gesamt++ } catch(_){}
+        await sleep(500);
+        if (S.antworten > 0) return { gesendet:S.gesamt, ok:true };
+      }
+
+      if (v === 1) log("keine Antwort · neuer Anlauf", "y");
+    }
+    return { gesendet:S.gesamt, ok:false };
+  } finally { S.befehlLauf = false }
+}
+
+/* ═══════ IMEI ═══════ */
+
+function imeiRechnen(){
+  const v = $("iImei").value.replace(/\D/g, "");
+  if (v.length < 14){ stat("IMEI zu kurz", "err"); return }
+  S.imei = v;
+  ls("imei", v);
+  const p = DES.passwort(v);
+  $("pwAus").textContent = "Passwort: " + p + " · auch " + p.slice(0, 8);
+  stat("Passwort gerechnet", "ok");
+}
+
+/* ═══════ QR ═══════ */
+
+let jsqrLaden = null;
+function jsqr(){
+  if (window.jsQR) return Promise.resolve();
+  if (jsqrLaden) return jsqrLaden;
+  jsqrLaden = new Promise((ok, we) => {
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js";
+    s.onload = ok;
+    s.onerror = () => { jsqrLaden = null; we(new Error("Scanner nicht ladbar")) };
+    document.head.appendChild(s);
+  });
+  return jsqrLaden;
+}
+
+function kameraStopp(){
+  if (S.cam){ S.cam.getTracks().forEach(t => t.stop()); S.cam = null }
+  $("qr").style.display = "none";
+}
+
+function qrCode(text){
+  const t = String(text || "").trim();
+  let m = t.match(/[?&](?:id|vehicle_id|code|bike)=([A-Za-z0-9]{4,})/);
+  if (m) return m[1];
+  m = t.match(/lime\.bike\/[A-Za-z]*\/?([A-Za-z0-9]{4,})/i);
+  if (m) return m[1];
+  m = t.match(/^([A-Za-z0-9]{4,12})$/);
+  if (m) return m[1];
+  return "";
+}
+
+async function kamera(){
+  try { await jsqr() } catch(e){ stat(kurz(e), "e"); return }
+  try {
+    S.cam = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:"environment" } });
+  } catch(e){ stat("Kamera: " + kurz(e), "e"); return }
+  const v = $("vid");
+  v.srcObject = S.cam;
+  try { await v.play() } catch(_){}
+  $("qr").style.display = "block";
+  S.t0 = Date.now();
+
+  const scannen = () => {
+    if (!S.cam) return;
+    if (Date.now() - S.t0 > 60000){ kameraStopp(); stat("Kamera aus.", "warn"); return }
+    if (v.readyState === v.HAVE_ENOUGH_DATA){
+      const c = document.createElement("canvas");
+      c.width = v.videoWidth;
+      c.height = v.videoHeight;
+      const x = c.getContext("2d");
+      x.drawImage(v, 0, 0, c.width, c.height);
+      const d = x.getImageData(0, 0, c.width, c.height);
+      const r = window.jsQR(d.data, d.width, d.height);
+      if (r && r.data){
+        kameraStopp();
+        $("qrbox").textContent = "Code: " + r.data;
+        const code = qrCode(r.data);
+        if (code){
+          S.code = code;
+          $("iCode").value = code;
+          speichern();
+          log("Fahrzeugkennung · " + code, "g");
+          stat("QR gelesen · Kennung " + code, "ok");
+        } else {
+          stat("QR gelesen · keine Kennung erkannt", "warn");
+        }
+        return;
+      }
+    }
+    requestAnimationFrame(scannen);
+  };
+  requestAnimationFrame(scannen);
+}
+
+/* ═══════ ANZEIGE ═══════ */
+
+function paint(){
+  const a = acct();
+  const k = S.karten[S.brand];
+  $("uMail").textContent = a ? (a.e || a.ph || "–") : "–";
+  $("uKarte").textContent = k
+    ? (k.num.slice(-4) + (k.hinterlegt ? " · hinterlegt" : (k.ok ? " · geprüft" : " · neu")))
+    : "–";
+  karteMalen();
+  $("bPhone").disabled = S.prov;
+  $("bStart").disabled = S.prov;
+  $("bKomplett").disabled = S.prov;
+  $("bNeu").disabled = S.prov;
+  $("bBin").disabled = S.prov;
+  $("bSchnell").disabled = S.prov;
+}
+
+function fuellung(el, wert, min, max){
+  const p = Math.max(0, Math.min(100, Math.round((wert - min) / (max - min) * 100)));
+  el.style.setProperty("--p", p + "%");
+}
+
+function stellungenMalen(){
+  $("sGrenze").textContent = euro(S.grenze);
+  $("sStart").textContent = euro(S.start);
+  $("sMin").textContent = euro(S.minute);
+  $("sAuto").textContent = S.autolock > 0 ? S.autolock + " min" : "aus";
+  $("iGrenze").value = String(Math.round(S.grenze / 100));
+  $("iStart").value = String(S.start);
+  $("iMin").value = String(S.minute);
+  $("iTon").checked = S.ton;
+  fuellung($("iGrenze"), S.grenze / 100, 10, 200);
+  fuellung($("iStart"), S.start, 0, 300);
+  fuellung($("iMin"), S.minute, 0, 100);
+}
+
+function speichern(){
+  ls("karten", S.karten);
+  ls("pk", S.pk);
+  ls("acct", S.acct);
+  ls("brand", S.brand);
+  ls("ck", S.ck);
+  ls("okaitausch", S.okaiTausch);
+  ls("code", S.code);
+  ls("grenze", S.grenze);
+  ls("start", S.start);
+  ls("minute", S.minute);
+  ls("autolock", S.autolock);
+  ls("ton", S.ton);
+}
+
+/* ═══════ VERDRAHTUNG ═══════ */
+
+function tue(id, fn){
+  const e = $(id);
+  if (!e) return;
+  e.onclick = async () => {
+    if (e.disabled) return;
+    e.disabled = true;
+    try { await fn() }
+    catch(x){ stat(kurz(x), "e"); log(kurz(x), "e") }
+    finally { e.disabled = false; paint() }
+  };
+}
+
+document.querySelectorAll(".brands button").forEach(b => {
+  b.onclick = () => {
+    S.brand = b.dataset.b;
+    speichern();
+    document.querySelectorAll(".brands button")
+      .forEach(x => x.classList.toggle("on", x.dataset.b === S.brand));
+    paint();
+    stat(V[S.brand].name + " gewählt.", "");
+  };
+});
+
+tue("bStart", starten);
+tue("bKomplett", erneuern);
+tue("bMe", kontoPruefen);
+tue("bOtp", kontoPruefen);
+tue("bDel", async () => { await kontoLoeschen(); stat("Konto entfernt.", "ok") });
+tue("bPhone", kontoTelefon);
+
+tue("bNeu", async () => {
+  fahrtStoppen();
+  S.karten[S.brand] = karteBauen();
+  S.erneuert = false;
+  speichern();
+  karteMalen();
+  cstat("neue Karte · jetzt BIN-SUCHE oder ALLES ANLEGEN", "");
+});
+
+tue("bBin", suchen);
+tue("bBinUse", async () => {
+  const v = $("iBin").value.replace(/\D/g, "");
+  if (v.length < 6) throw new Error("BIN braucht mindestens 6 Ziffern");
+  if (v.length > 8) throw new Error("BIN hat höchstens 8 Ziffern");
+  fahrtStoppen();
+  S.karten[S.brand] = karteBauen(v);
+  speichern();
+  karteMalen();
+  await pruefen();
+});
+tue("bCardDel", async () => {
+  fahrtStoppen();
+  S.karten[S.brand] = null;
+  speichern();
+  karteMalen();
+  cstat("Karte entfernt", "");
+});
+
+async function entsperrenMitBuchung(){
+  const r = await befehl("un");
+  if (!r.ok){
+    if (r.gesendet) stat("Befehle raus (" + r.gesendet + ") · keine Antwort", "warn");
+    else stat("nichts gesendet", "warn");
+    return;
+  }
+  if (S.brand !== "lime" || !S.code || S.rideId){ stat("entsperrt", "ok"); return }
+  stat("entsperrt · buche Fahrt", "warn");
+  const id = await limeBuchen();
+  stat(id ? "entsperrt · Fahrt gebucht" : "entsperrt · ohne Buchung", id ? "ok" : "warn");
+}
+
+tue("bUnlock", entsperrenMitBuchung);
+
+tue("bSchnell", async () => {
+  if (!S.best || !S.dev || !S.dev.gatt.connected) await verbinden();
+  await entsperrenMitBuchung();
+});
+
+async function sperren(){
+  let ok = false;
+  try {
+    const r = await befehl("lk");
+    ok = r.ok;
+  } catch(e){
+    log("Sperren: " + kurz(e), "y");
+  } finally {
+    fahrtStoppen();
+  }
+  return ok;
+}
+
+tue("bLock", async () => {
+  const ok = await sperren();
+  stat(ok ? "gesperrt" : "gesperrt ohne Antwort", ok ? "ok" : "warn");
+});
+
+tue("bPark", async () => {
+  const ok = await sperren();
+  stat(ok ? "geparkt · steht im Buch" : "geparkt ohne Antwort · steht im Buch", ok ? "ok" : "warn");
+});
+
+tue("bFahrtmodus", cockpitAuf);
+tue("bCockpit", cockpitAuf);
+$("ckZu").onclick = () => { cockpitZu(); stat("Fahrtmodus zu", ""); };
+
+$("ckUn").onclick = async () => {
+  const e = $("ckUn");
+  if (e.disabled) return;
+  e.disabled = true;
+  try {
+    if (!S.best || !S.dev || !S.dev.gatt.connected){
+      ckstat("Gerät wählen …", "warn");
+      await verbinden();
+    }
+    ckstat("entsperre …", "warn");
+    await entsperrenMitBuchung();
+    ckstat(S.fahrt.laufend ? "läuft" : "nicht entsperrt", S.fahrt.laufend ? "g" : "e");
+  } catch(x){
+    ckstat(kurz(x), "e");
+  } finally { e.disabled = S.fahrt.laufend }
+};
+
+$("ckPark").onclick = async () => {
+  const e = $("ckPark");
+  if (e.disabled) return;
+  e.disabled = true;
+  try {
+    const ok = await sperren();
+    stat(ok ? "geparkt · steht im Buch" : "geparkt ohne Antwort · steht im Buch", ok ? "ok" : "warn");
+  } finally { e.disabled = false }
+};
+
+$("ckLight").onclick = async () => {
+  if (!S.best) return;
+  S.licht = !S.licht;
+  if (okaiWeg()) await sende(S.best, bu(enc(okaiRahmen("OKLED", [OKAI_PW, S.licht ? "1" : "0"]))));
+  else await sende(S.best, S.licht ? LICHT_AN : LICHT_AUS);
+  ckstat("Licht " + (S.licht ? "an" : "aus"), "g");
+};
+
+$("ckFind").onclick = async () => {
+  if (!S.best) return;
+  for (let i = 0; i < 3; i++){
+    if (!S.dev || !S.dev.gatt.connected) break;
+    if (okaiWeg()) await sende(S.best, bu(enc(okaiRahmen("OKSCT", [OKAI_PW, "1"]))));
+    else await sende(S.best, BLINK);
+    alarm(false);
+    ckstat("piepst · " + (i + 1) + "/3", "");
+    await sleep(800);
+  }
+};
+
+tue("bFind", async () => {
+  if (!S.best) throw new Error("nicht verbunden");
+  if (S.findLauf) throw new Error("läuft schon");
+  S.findLauf = true;
+  try {
+    for (let i = 0; i < 5; i++){
+      if (!S.dev || !S.dev.gatt.connected) break;
+      S.antworten = 0;
+      if (okaiWeg()) await sende(S.best, bu(enc(okaiRahmen("OKSCT", [OKAI_PW, "1"]))));
+      else await sende(S.best, BLINK);
+      alarm(false);
+      stat("finde … " + (i + 1) + "/5", "warn");
+      await sleep(900);
+    }
+    stat("fertig · Roller hat gepiept", "ok");
+  } finally { S.findLauf = false }
+});
+
+tue("bBeep", async () => {
+  if (!S.best) throw new Error("nicht verbunden");
+  S.antworten = 0;
+  if (okaiWeg()) await sende(S.best, bu(enc(okaiRahmen("OKSCT", [OKAI_PW, "1"]))));
+  else await sende(S.best, BLINK);
+  await sleep(600);
+  stat(S.antworten ? "Pieps · Antwort" : "Pieps gesendet", S.antworten ? "ok" : "warn");
+});
+
+tue("bBat", async () => {
+  if (!S.best) throw new Error("nicht verbunden");
+  if (okaiWeg()){
+    const a = await okaiAkku();
+    stat(a ? "Akku-Abfrage beantwortet · siehe Protokoll" : "keine Antwort", a ? "ok" : "warn");
+    return;
+  }
+  stat(S.akku != null ? "Akku " + S.akku + " %" : "noch kein Status empfangen",
+    S.akku != null ? "ok" : "warn");
+});
+
+tue("bLight", async () => {
+  if (!S.best) throw new Error("nicht verbunden");
+  S.licht = !S.licht;
+  if (okaiWeg()) await sende(S.best, bu(enc(okaiRahmen("OKLED", [OKAI_PW, S.licht ? "1" : "0"]))));
+  else await sende(S.best, S.licht ? LICHT_AN : LICHT_AUS);
+  stat("Licht " + (S.licht ? "an" : "aus"), "ok");
+});
+
+tue("bWo", async () => {
+  if (!S.letzteWo) throw new Error("kein Standort gespeichert");
+  location.href = "geo:0,0?q=" + S.letzteWo.lat + "," + S.letzteWo.lng + "(Roller)";
+});
+
+tue("bZusWeg", async () => {
+  $("zusBox").style.display = "none";
+});
+
+tue("bConn", verbinden);
+tue("bScan", kamera);
+$("bQrClose").onclick = kameraStopp;
+tue("bImei", imeiRechnen);
+tue("bAuth", async () => {
+  if (!S.best) throw new Error("nicht verbunden");
+  const pw = await anmelden(S.best);
+  stat(pw ? "angemeldet · " + pw : "keine Anmeldung", pw ? "ok" : "warn");
+});
+tue("bOkaiPw", async () => {
+  const a = await okaiPwd();
+  stat(a ? "OKPWD beantwortet · Kanal trägt" : "keine Antwort", a ? "ok" : "warn");
+});
+tue("bOkaiUn", async () => {
+  const a = await okaiSchalten(true);
+  stat(a ? "OKSCM 0 beantwortet" : "keine Antwort", a ? "ok" : "warn");
+});
+tue("bOkaiLk", async () => {
+  const a = await okaiSchalten(false);
+  stat(a ? "OKSCM 1 beantwortet" : "keine Antwort", a ? "ok" : "warn");
+});
+tue("bOkaiBat", async () => {
+  const a = await okaiAkku();
+  stat(a ? "OKBCL beantwortet" : "keine Antwort", a ? "ok" : "warn");
+});
+
+$("iTausch").onchange = () => {
+  S.okaiTausch = $("iTausch").checked;
+  ls("okaitausch", S.okaiTausch);
+  log("OKSCM getauscht · " + (S.okaiTausch ? "0 = zu, 1 = auf" : "0 = auf, 1 = zu"), "y");
+};
+
+$("iGrenze").oninput = () => {
+  const v = parseInt($("iGrenze").value, 10);
+  S.grenze = (isFinite(v) && v > 0 ? v : 50) * 100;
+  stellungenMalen();
+  speichern();
+  fahrtMalen();
+};
+$("iStart").oninput = () => {
+  const v = parseInt($("iStart").value, 10);
+  S.start = isFinite(v) ? v : 0;
+  stellungenMalen();
+  speichern();
+  fahrtMalen();
+};
+$("iMin").oninput = () => {
+  const v = parseInt($("iMin").value, 10);
+  S.minute = isFinite(v) ? v : 0;
+  stellungenMalen();
+  speichern();
+  fahrtMalen();
+};
+$("iTon").onchange = () => {
+  S.ton = $("iTon").checked;
+  speichern();
+  if (S.ton) ton(720, 120);
+};
+
+tue("bAutoPlus", async () => {
+  S.autolock = Math.min(120, S.autolock + 5);
+  stellungenMalen();
+  speichern();
+  fahrtMalen();
+});
+tue("bAutoMinus", async () => {
+  S.autolock = Math.max(0, S.autolock - 5);
+  stellungenMalen();
+  speichern();
+  fahrtMalen();
+});
+
+tue("bCode", async () => {
+  const v = $("iCode").value.trim();
+  if (!v) throw new Error("Feld leer");
+  S.code = v;
+  speichern();
+  stat("Kennung übernommen · " + v, "ok");
+});
+
+tue("bBuchen", async () => {
+  if (S.brand !== "lime") throw new Error("Buchung nur bei Lime");
+  if (!S.code) throw new Error("erst Fahrzeugkennung setzen oder QR scannen");
+  const id = await limeBuchen();
+  stat(id ? "Fahrt gebucht · " + id : "Buchung ohne Erfolg · siehe Protokoll", id ? "ok" : "warn");
+});
+
+tue("bRueck", async () => {
+  if (!S.buch.length) throw new Error("Buch ist leer");
+  S.buch.pop();
+  ls("buch", S.buch);
+  buchMalen();
+  stat("letzte Fahrt entfernt.", "ok");
+});
+
+function buchText(){
+  return S.buch.map(e => new Date(e.t).toLocaleString("de-DE") + " · " +
+    e.marke + " · " + uhr(Math.round(e.dauer)) + " · " + kmText(e.dist) + " · " +
+    euro(e.preis) + (e.code ? " · " + e.code : "")).join("\r\n");
+}
+
+tue("bBuchKopie", async () => {
+  if (!S.buch.length) throw new Error("Buch ist leer");
+  try { await navigator.clipboard.writeText(buchText()); stat("kopiert.", "ok") }
+  catch(_){ stat("Kopieren verweigert", "warn") }
+});
+
+tue("bExport", async () => {
+  if (!S.buch.length) throw new Error("Buch ist leer");
+  try {
+    const blob = new Blob([buchText()], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "fahrtenbuch.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    stat("Datei geschrieben.", "ok");
+  } catch(_){ stat("Export nicht möglich", "warn") }
+});
+
+tue("bBuchDel", async () => {
+  S.buch = [];
+  ls("buch", []);
+  buchMalen();
+  stat("Buch gelöscht.", "ok");
+});
+
+/* ═══════ SELBSTPRÜFUNG ═══════ */
+
+const PFLICHT = [
+  "status","bt","bUnlock","bFahrtmodus","bSchnell","bLock","bFind","bBeep","bBat","bConn",
+  "bLight","bScan","qr","vid","bQrClose","qrbox","fahrtBox","tempo","fKmh","fRest","fAuto",
+  "bCockpit","bPark","zusBox","zusammen","bWo","bZusWeg",
+  "uMail","uKarte","uLast","uLimit","cBar","uZeit","bStart","bNeu","bKomplett","bMe","bDel",
+  "cstat","cardBox","cBrand","cNum","cExp","cCvv","cLimit","bBin","bCardDel","iBin","bBinUse",
+  "sGrenze","iGrenze","sStart","iStart","sMin","iMin","sAuto","bAutoMinus","bAutoPlus","iTon",
+  "buch","stN","stKm","stEur","stSchnitt","bRueck","bBuchKopie","bExport","bBuchDel",
+  "log","bLeer","bDiag",
+  "iImei","bImei","bAuth","pwAus","iKanal","iRelay","bSaveRelay","bRelayDel","bNet","bFrei",
+  "bCopyW","workerCode","iLink","bLink","bCookie","iCode","bCode","bBuchen","bTest","bOkaiPw",
+  "bOkaiUn","bOkaiLk","bOkaiBat","iTausch","iSvc","iCh","iRaw","bRaw","iPhone","bPhone","bOtp",
+  "iOtp","iPk","bPk","bReset","cockpit","ckKmh","ckTempo","ckZeit","ckEur","ckRest","ckDist",
+  "ckBrand","ckConn","ckBatLab","ckAkku","ckLight","ckFind","ckUn","ckPark","ckZu","ckStat"
+];
+
+function elementePruefen(){
+  const fehlt = PFLICHT.filter(id => !$(id));
+  return { gut: PFLICHT.length - fehlt.length, soll: PFLICHT.length, fehlt: fehlt };
+}
+
+function FRAME_TEST(){
+  const v = [
+    [HERTZ, "46 43 11 01 00 08 4c 49 4d 45 42 49 4b 45 be 8a"],
+    [AN, "46 43 16 61 00 01 f1 f2 8f"],
+    [AUS, "46 43 16 61 00 01 f0 e2 ae"],
+    [BLINK, "46 43 16 13 00 01 06 c2 6a"],
+    [LICHT_AN, "46 43 16 12 00 01 f1 2b 26"],
+    [rahmenB(0x1114, []), "46 43 11 14 00 00 ea fb"]
+  ];
+  let gut = 0;
+  for (const [f, soll] of v){
+    if (hex(f) === soll) gut++;
+    else log("Rahmen falsch: " + hex(f), "e");
+  }
+  return { gut, soll:v.length };
+}
+
+function OKAI_TEST(){
+  const alt = S.okseq;
+  const v = [
+    ["AT+OKPWD=OKAIYLBT,0001$\r\n", () => { S.okseq = 0; return okaiRahmen("OKPWD", [OKAI_PW]) }],
+    ["AT+OKSCM=OKAIYLBT,1,ABCC$\r\n", () => { S.okseq = 0xABCB; return okaiRahmen("OKSCM", [OKAI_PW, "1"]) }],
+    ["AT+OKXWM=OKAI_CAR,2,0003$\r\n", () => { S.okseq = 2; return okaiRahmen("OKXWM", [OKAI_SVC_PW, "2"]) }]
+  ];
+  let gut = 0;
+  for (const [soll, bauen] of v){
+    const s = bauen();
+    if (s === soll) gut++;
+    else log("AT-Rahmen falsch: " + s.replace(/\r\n/g, "\\r\\n"), "e");
+  }
+  S.okseq = alt;
+  return { gut, soll:v.length };
+}
+
+tue("bDiag", async () => {
+  log("=== DIAGNOSE ===", "h");
+  const el = elementePruefen();
+  log("Elemente: " + el.gut + "/" + el.soll, el.fehlt.length ? "e" : "g");
+  for (const f of el.fehlt) log("  fehlt: " + f, "e");
+  const f = FRAME_TEST();
+  log("Rahmen: " + f.gut + "/" + f.soll, f.gut === f.soll ? "g" : "e");
+  const o = OKAI_TEST();
+  log("AT-Rahmen: " + o.gut + "/" + o.soll, o.gut === o.soll ? "g" : "e");
+  const d = DES.selbsttest();
+  log("DES: " + d.gut + "/" + d.soll, d.gut === d.soll ? "g" : "e");
+  log("Bluetooth: " + (navigator.bluetooth ? "ja" : "nein"));
+  log("Ortung: " + (navigator.geolocation ? "ja" : "nein") + (S.gpsAus ? " · verweigert" : ""));
+  log("Wachhalten: " + ("wakeLock" in navigator ? "ja" : "nein"));
+  log("Relay: " + (S.relay || "keiner"));
+  log("Sitzung: " + (S.ck ? "vorhanden" : "keine"));
+  log("Login-Variante: " + S.loginWeg);
+  log("Kennung: " + (S.code || "keine"));
+  log("Grenze: " + euro(S.grenze) + " · Start " + euro(S.start) + " · Minute " + euro(S.minute));
+  log("Marke: " + S.brand + " · OKAI-Weg: " + (okaiWeg() ? "ja" : "nein"));
+  log("Kanäle: " + S.chans.length + (S.best ? " · aktiv " + S.best.wr : ""));
+  for (const c of S.chans) log("  " + c.svc + " / " + c.wr + (c.notify ? " notify" : ""));
+  log("=== ENDE ===", "h");
+  stat(el.fehlt.length
+    ? "Diagnose · " + el.fehlt.length + " Elemente fehlen"
+    : "Diagnose geschrieben.", el.fehlt.length ? "e" : "ok");
+});
+
+$("bLeer").onclick = () => { $("log").textContent = "" };
+
+tue("bFrei", async () => {
+  S.tot = {}; S.fehler = {}; S.gut = ""; ls("gut", "");
+  stat("Sperren aufgehoben.", "ok");
+});
+
+tue("bLink", async () => {
+  const v = $("iLink").value.trim();
+  if (!v) throw new Error("Feld leer");
+  const k = tokenAus(v);
+  if (!k.length) throw new Error("kein Merkmal im Link");
+  await limeSitzung();
+  let letzte = "";
+  for (const t of k){
+    try {
+      const tok = await limeLogin(t);
+      const a = acct() || {};
+      a.t = tok;
+      a.e = a.e || "manuell";
+      setAcct(a);
+      paint();
+      stat("angemeldet.", "ok");
+      return;
+    } catch(e){ letzte = kurz(e) }
+  }
+  throw new Error("Link abgelehnt · " + letzte);
+});
+
+tue("bCookie", async () => {
+  S.ck = ""; ls("ck", "");
+  stat("Sitzung gelöscht.", "ok");
+});
+
+tue("bSaveRelay", async () => {
+  let v = $("iRelay").value.trim();
+  if (!v) throw new Error("Feld leer");
+  if (!/^https:\/\//.test(v)) v = "https://" + v;
+  if (!/\?url=$/.test(v)) v = v.replace(/[?&]url=.*$/, "").replace(/\/$/, "") + "/?url=";
+  S.relay = v; ls("relay", v);
+  $("iRelay").value = v;
+  stat("Relay gespeichert.", "ok");
+});
+
+tue("bRelayDel", async () => {
+  S.relay = ""; ls("relay", "");
+  $("iRelay").value = "";
+  stat("Relay gelöscht.", "ok");
+});
+
+tue("bNet", async () => {
+  const post = V.lime.base + "/v2/onboarding/magic-link";
+  const get = GU + "?f=get_email_address&lang=en";
+  const probe = "email=probe%40example.com&user_agreement_country_code=DE&user_agreement_version=4";
+  log("=== NETZTEST ===", "h");
+  const zeig = (name, res, text) => {
+    const gut = res.status < 400 || (res.status >= 400 && res.status < 423 && /^[\[{]/.test(text.trim()));
+    log((gut ? "OK  " : "HTTP " + res.status + "  ") + name, gut ? "g" : "e");
+  };
+  const pruef = async (name, fn) => {
+    try { const r = await fn(); zeig(name, r, await r.text()) }
+    catch(e){ log("FEHLT  " + name + " · " + kurz(e), "e") }
+  };
+  if (S.relay){
+    await pruef("RELAY GET", () => fetch(S.relay + encodeURIComponent(get)));
+    await pruef("RELAY POST", () => fetch(S.relay + encodeURIComponent(post),
+      { method:"POST", headers:HF(), body:probe }));
+  } else log("kein Relay gesetzt", "y");
+  for (const w of POSTWEGE)
+    await pruef(w.n + " POST", () => fetch(w.f(post), { method:"POST", headers:HF(), body:probe }));
+  for (const w of GETWEGE)
+    await pruef(w.n + " GET", () => fetch(w.f(get)));
+  log("=== ENDE ===", "h");
+  stat("Test beendet.", "ok");
+});
+
+tue("bCopyW", async () => {
+  try { await navigator.clipboard.writeText($("workerCode").value); stat("kopiert.", "ok") }
+  catch(_){ $("workerCode").select(); stat("markiert · jetzt kopieren.", "warn") }
+});
+
+tue("bPk", async () => {
+  const v = $("iPk").value.trim();
+  if (!PK_FORM.test(v)) throw new Error("sieht nicht wie ein pk_live_… aus");
+  S.pk[S.brand] = v; S.keyOk = v; ls("pk", S.pk);
+  paint();
+  stat("Schlüssel gespeichert.", "ok");
+});
+
+tue("bRaw", async () => {
+  if (!S.srv) throw new Error("nicht verbunden");
+  const svc = $("iSvc").value.trim(), ch = $("iCh").value.trim();
+  let ziel = S.best;
+  if (svc && ch){
+    const s = await S.srv.getPrimaryService(svc);
+    const c = await s.getCharacteristic(ch);
+    ziel = { svc, wr:ch, char:c };
+    S.best = ziel;
+  }
+  const t = $("iRaw").value.trim();
+  if (!t) throw new Error("nichts eingegeben");
+  const h = t.replace(/[^0-9a-f]/gi, "");
+  const a = (/^[0-9a-f\s]+$/i.test(t) && h.length >= 4 && h.length % 2 === 0)
+    ? bu(h.match(/../g).map(x => parseInt(x, 16)))
+    : bu(enc(t));
+  await sende(ziel, a);
+  log("gesendet · " + hex(a), "g");
+});
+
+tue("bTest", async () => {
+  const el = elementePruefen();
+  const f = FRAME_TEST();
+  const o = OKAI_TEST();
+  const d = DES.selbsttest();
+  log("Elemente " + el.gut + "/" + el.soll + " · Rahmen " + f.gut + "/" + f.soll +
+    " · AT " + o.gut + "/" + o.soll + " · DES " + d.gut + "/" + d.soll, "h");
+  const alle = el.fehlt.length === 0 && f.gut === f.soll && o.gut === o.soll && d.gut === d.soll;
+  stat("Elemente " + el.gut + "/" + el.soll + " · Rahmen " + f.gut + "/" + f.soll +
+    " · AT " + o.gut + "/" + o.soll + " · DES " + d.gut + "/" + d.soll, alle ? "ok" : "e");
+  if (!S.best) return;
+  const t = await okaiTest();
+  stat(t ? "Testmodus beantwortet" : "Testmodus ohne Antwort", t ? "ok" : "warn");
+});
+
+tue("bReset", async () => {
+  clearInterval(S.fahrt.timer);
+  clearInterval(S.ckTimer);
+  stopPing();
+  gpsStopp();
+  await wachAus();
+  document.body.classList.remove("ck");
+  Object.keys(localStorage).filter(k => k.indexOf(PRE) === 0)
+    .forEach(k => localStorage.removeItem(k));
+  location.reload();
+});
+
+/* ═══════ START ═══════ */
+
+const WORKER = `export default {
+  async fetch(req){
+    const cors = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers":
+        "Content-Type, Authorization, Accept, X-Device-Token, Platform, App-Version, Cookie",
+      "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+      "Access-Control-Expose-Headers": "x-set-cookie",
+      "Access-Control-Max-Age": "86400"
+    };
+    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors });
+    const u = new URL(req.url);
+    let ziel = u.searchParams.get("url");
+    if (!ziel && u.pathname.length > 1) ziel = decodeURIComponent(u.pathname.slice(1)) + (u.search || "");
+    if (!ziel) return new Response("keine url", { status: 400, headers: cors });
+    if (!/^https?:\\/\\//i.test(ziel)) ziel = "https://" + ziel;
+    const h = new Headers(req.headers);
+    ["host","origin","referer","cf-connecting-ip","cf-ray","cf-visitor","cf-ipcountry",
+     "x-forwarded-proto","x-real-ip","accept-encoding","connection","content-length",
+     "sec-fetch-site","sec-fetch-mode","sec-fetch-dest","sec-ch-ua","sec-ch-ua-mobile",
+     "sec-ch-ua-platform"].forEach(k => h.delete(k));
+    h.set("Origin", "https://www.lime.com");
+    h.set("Referer", "https://www.lime.com/");
+    if (!h.get("User-Agent") || /cloudflare/i.test(h.get("User-Agent")))
+      h.set("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) " +
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1");
+    const init = { method: req.method, headers: h, redirect: "follow" };
+    if (req.method !== "GET" && req.method !== "HEAD") init.body = await req.arrayBuffer();
+    const ctl = new AbortController();
+    const t = setTimeout(() => ctl.abort(), 25000);
+    init.signal = ctl.signal;
+    try {
+      const r = await fetch(ziel, init);
+      clearTimeout(t);
+      const out = new Headers(r.headers);
+      ["content-encoding","content-length","transfer-encoding","connection","set-cookie"]
+        .forEach(k => out.delete(k));
+      const ck = [];
+      if (r.headers.getSetCookie) ck.push(...r.headers.getSetCookie());
+      else {
+        const ein = r.headers.get("set-cookie");
+        if (ein) ck.push(ein);
+      }
+      if (ck.length){
+        out.set("x-set-cookie", ck.map(z => String(z).split(";")[0]).join("\\n"));
+      }
+      Object.entries(cors).forEach(([k, v]) => out.set(k, v));
+      return new Response(r.body, { status: r.status, headers: out });
+    } catch(e){
+      clearTimeout(t);
+      return new Response(JSON.stringify({ error: "relay_fail", detail: String(e) }),
+        { status: 502, headers: { ...cors, "Content-Type": "application/json" } });
+    }
+  }
+};`;
+
+function boot(){
+  S.karten = lg("karten", {}) || {};
+  S.pk = lg("pk", {}) || {};
+  S.acct = lg("acct", {}) || {};
+  S.relay = lg("relay", "") || "";
+  S.gut = lg("gut", "") || "";
+  S.imei = lg("imei", "") || "";
+  S.ck = lg("ck", "") || "";
+  S.code = lg("code", "") || "";
+  S.buch = Array.isArray(lg("buch", [])) ? lg("buch", []) : [];
+  S.okaiTausch = !!lg("okaitausch", false);
+  S.loginWeg = Number(lg("loginweg", 0)) || 0;
+  const g = Number(lg("grenze", 5000));
+  S.grenze = isFinite(g) && g >= 1000 ? g : 5000;
+  const st = Number(lg("start", 100));
+  S.start = isFinite(st) && st >= 0 ? st : 100;
+  const mi = Number(lg("minute", 15));
+  S.minute = isFinite(mi) && mi >= 0 ? mi : 15;
+  const au = Number(lg("autolock", 0));
+  S.autolock = isFinite(au) && au >= 0 ? au : 0;
+  S.ton = lg("ton", true) !== false;
+  S.brand = lg("brand", "lime");
+  if (!V[S.brand]) S.brand = "lime";
+  S.keyOk = (S.pk.lime && PK_FORM.test(S.pk.lime)) ? S.pk.lime : "";
+  S.tot = {}; S.fehler = {}; S.hostTot = {};
+
+  $("iRelay").value = S.relay;
+  $("workerCode").value = WORKER;
+  $("iTausch").checked = S.okaiTausch;
+  $("iCode").value = S.code;
+  if (S.imei) $("iImei").value = S.imei;
+  const a = acct();
+  if (a && a.ph) $("iPhone").value = a.ph;
+  if (S.pk[S.brand]) $("iPk").value = S.pk[S.brand];
+
+  document.querySelectorAll(".brands button")
+    .forEach(x => x.classList.toggle("on", x.dataset.b === S.brand));
+  stellungenMalen();
+  buchMalen();
+  paint();
+
+  const el = elementePruefen();
+  log("bereit · " + V[S.brand].name, "g");
+  if (el.fehlt.length){
+    log("Elemente fehlen: " + el.fehlt.join(", "), "e");
+    stat("Achtung · " + el.fehlt.length + " Elemente fehlen", "e");
+  } else {
+    stat(S.relay ? "bereit · Relay gesetzt" : "bereit · ohne Relay", "");
+  }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden){ kameraStopp(); return }
+  if (S.cockpit) wachAn();
+});
+window.addEventListener("error", e => log("Fehler: " + kurz(e.message), "e"));
+window.addEventListener("unhandledrejection", e => log("Promise: " + kurz(e.reason), "e"));
+
+(function(){
+  const q = new URLSearchParams(location.search);
+  let a = q.get("do");
+  if (!a && location.hash) a = (location.hash.match(/do=([a-z]+)/i) || [])[1];
+  if (!a) return;
+  a = a.toLowerCase();
+  if (a !== "unlock" && a !== "lock") return;
+  setTimeout(() => {
+    if (S.best && S.dev && S.dev.gatt.connected) $(a === "unlock" ? "bUnlock" : "bLock").click();
+    else log("Verknüpfung " + a + " · erst verbinden", "y");
+  }, 400);
+})();
+
+boot();
+
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => {});
+</script>
+</body>
+</html>
